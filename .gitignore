@@ -1,0 +1,38 @@
+# Byte-compiled / Python caches
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environments
+.venv/
+env/
+venv/
+# Poetry virtualenvs are usually outside the project folder, so often safe to ignore
+
+# SQLite database file
+data/*.db
+# Optional: ignore DB only if you want users to generate it from schema.sql
+
+# Logs
+logs/
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# PyInstaller builds (if you package your app)
+dist/
+build/
+*.spec
+
+# Python egg files
+*.egg-info/
+*.egg
