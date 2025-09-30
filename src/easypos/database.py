@@ -1,15 +1,16 @@
 import sqlite3
 import os
 from pathlib import Path
-from config.db_config import DB_CONFIG
+from easypos.config.db_config import DB_CONFIG
 
 # Database and schema paths
-DB_PATH = Path("data/easypso_database.db")
+DB_PATH = Path("data/easypos_database.db")
 SCHEMA_PATH = Path("db/schema.sql")
 
 
 def init_db():
     """Initialize the database from a .sql file."""
+    print("Initializing database...")
     # Ensure the data folder exists
     DB_PATH.parent.mkdir(exist_ok=True)
 
