@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from easypos.database import DBConnection
+from easypos.database.connection import DBConnection
 from typing import Optional
 
 

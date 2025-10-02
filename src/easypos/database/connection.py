@@ -8,24 +8,8 @@ DB_PATH = Path("data/easypos_database.db")
 SCHEMA_PATH = Path("db/schema.sql")
 
 
-def init_db():
-    """Initialize the database from a .sql file."""
-    print("Initializing database...")
-    # Ensure the data folder exists
-    DB_PATH.parent.mkdir(exist_ok=True)
 
-    # Connect to SQLite (file will be created if it doesn't exist)
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
 
-    # Read and execute SQL schema
-    if SCHEMA_PATH.exists():
-        with open(SCHEMA_PATH, "r", encoding="utf-8") as f:
-            sql_script = f.read()
-        cursor.executescript(sql_script)
-        conn.commit()
-
-    conn.close()
 
 
 class DBConnection:
@@ -66,6 +50,9 @@ class DBConnection:
 
     def execute(self, sql, params=None):
         self.cursor.execute(sql, params or ())
+
+    def execute_script(self, sql):
+        self.cursor.executescript(sql)
 
     def fetchall(self):
         return self.cursor.fetchall()

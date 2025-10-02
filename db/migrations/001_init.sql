@@ -31,3 +31,9 @@ CREATE TABLE IF NOT EXISTS tickets (
     updated_at DATETIME DEFAULT current_timestamp,
     FOREIGN KEY (item_id) REFERENCES items (id)
 );
+
+CREATE TABLE IF NOT EXISTS schema_migrations (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    filename TEXT NOT NULL,
+    applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

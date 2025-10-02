@@ -4,11 +4,10 @@ from escpos.printer import Usb
 from PIL import Image
 import traceback
 import os
+import time
+
 vendor_id = 1046   # 0x0416
 product_id = 20497  # 0x5001
-
-
-printer = Usb(vendor_id, product_id)
 
 
 def get_usb_printer_info():
@@ -29,61 +28,77 @@ PRINTER_STYLE_INFO = {
     "width": 1,
     "height": 1
 }
-class EasyPrinter():
 
+# Custom exception for clarity
+class PrinterConnectionError(Exception):
+    pass
+
+
+class EasyPrinter:
     def __init__(self, printer_connection_type, ticket_width=203):
-        
         self.ticket_width = ticket_width
+        self.is_busy = False
 
-        if printer_connection_type == "usb":
-            vendor_id, product_id = get_usb_printer_info()
-            self.printer = Usb(vendor_id, product_id)
-        elif printer_connection_type == "fake":
-            self.printer = FakePrinter()
-        else:
-            raise ValueError(f"Invalid printer connection type: {printer_connection_type}")
+        try:
+            if printer_connection_type == "usb":
+                vendor_id, product_id = get_usb_printer_info()
+                self.printer = Usb(vendor_id, product_id)
+            elif printer_connection_type == "fake":
+                self.printer = FakePrinter(ticket_width=self.ticket_width)
+            else:
+                raise ValueError(f"Invalid printer connection type: {printer_connection_type}")
 
+            # is_online = self.printer.paper_status()
+            # print(f"Printer is online: {is_online}")
+            # if not is_online:
+            #     raise PrinterConnectionError(
+            #         f"Printer is not online (type={printer_connection_type})"
+            #     )
+        except Exception as e:
+            # Log the traceback for debugging
+            #traceback.print_exc()
+            # Raise a clear, custom error to stop execution
+            raise PrinterConnectionError(
+                f"Could not connect to printer (type={printer_connection_type}): {e}"
+            ) from e
 
-    def print_title(self, title):
+    def _print_title(self, title):
         self.printer.set(**PRINTER_STYLE_TITLE)
         self.printer.text(title)
-    
-    def print_icon(self, icon_path):
-        icon = Image.open(os.path.join("images", icon_path)).convert("1")  # 1-bit B/W for ESC/POS
-        max_width = 203
+
+    def _print_icon(self, icon_path):
+        icon = Image.open(os.path.join("images", icon_path)).convert("1")
+        max_width = self.ticket_width
         w_percent = (max_width / float(icon.size[0]))
         h_size = int((float(icon.size[1]) * float(w_percent)))
         icon = icon.resize((max_width, h_size))
-        
         self.printer.image(icon, center=True)
-    
 
-    def print_info(self, description, value):
+    def _print_info(self, description):
         self.printer.set(**PRINTER_STYLE_INFO)
         self.printer.text(description)
-        self.printer.text(value)
 
     def print_ticket(self, ticket: TicketModel):
-        
+        self.is_busy = True
         try:
-            self.print_title(ticket.name)
-            self.printer.textln()
-
-            self.print_icon(ticket.icon)
-            self.printer.textln()
-
-            self.print_info(ticket.description, f"#{ticket.id}")
-
+            #self._print_title(ticket.name)
+            #self.printer.textln()
+            #self._print_icon(ticket.icon)
+            #self.printer.textln()
+            self._print_info(ticket.description)
             self.printer.cut()
-
         except Exception as e:
-            print(f"[ERROR] Error printing ticket: {e}")
             traceback.print_exc()
-        
+            raise PrinterConnectionError(f"Error printing ticket: {e}") from e
+        finally:
+            self.is_busy = False
 
-    def open_cashdrawer(self):
-        self.printer.cashdraw()
-
+    def open_cashdrawer(self, pin=2):
+        try:
+            self.printer.cashdraw(pin)
+        except Exception as e:
+            traceback.print_exc()
+            raise PrinterConnectionError(f"Could not open cash drawer: {e}") from e
 
 
 #### FakePrinter ###

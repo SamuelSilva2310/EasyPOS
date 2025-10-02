@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from typing import Optional
 from datetime import datetime
 
-from easypos.database import DBConnection
+from easypos.database.connection import DBConnection
 
 @dataclass
 class SaleModel():

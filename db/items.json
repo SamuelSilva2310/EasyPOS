@@ -1,0 +1,17 @@
+[
+  {
+    "name": "Cafe",
+    "price": 1,
+    "icon": "icon.png"  
+  },
+  {
+    "name": "Cerveja",
+    "price": 2,
+    "icon": "icon.png"  
+  },
+  {
+    "name": "Sumo",
+    "price": 2,
+    "icon": "icon.png"  
+  }
+]
