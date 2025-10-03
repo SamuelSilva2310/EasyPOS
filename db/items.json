@@ -1,17 +1,17 @@
 [
   {
-    "name": "Cafe",
-    "price": 1,
-    "icon": "icon.png"  
-  },
-  {
     "name": "Cerveja",
-    "price": 2,
-    "icon": "icon.png"  
+    "price": 1,
+    "icon": "beer.png"  
   },
   {
-    "name": "Sumo",
+    "name": "Pizza",
     "price": 2,
-    "icon": "icon.png"  
+    "icon": "pizza.png"  
+  },
+  {
+    "name": "Pinguim",
+    "price": 2,
+    "icon": "penguin.png"  
   }
 ]
