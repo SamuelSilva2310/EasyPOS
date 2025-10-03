@@ -6,6 +6,9 @@ import traceback
 import os
 import time
 
+import logging
+logger = logging.getLogger(__name__)
+
 vendor_id = 1046   # 0x0416
 product_id = 20497  # 0x5001
 
@@ -40,6 +43,7 @@ class EasyPrinter:
         self.is_busy = False
 
         try:
+            logger.info(f"Connecting to printer (type={printer_connection_type})")
             if printer_connection_type == "usb":
                 vendor_id, product_id = get_usb_printer_info()
                 self.printer = Usb(vendor_id, product_id)
@@ -80,11 +84,12 @@ class EasyPrinter:
 
     def print_ticket(self, ticket: TicketModel):
         self.is_busy = True
+        logger.info(f"Printing ticket {ticket}")
         try:
-            #self._print_title(ticket.name)
-            #self.printer.textln()
-            #self._print_icon(ticket.icon)
-            #self.printer.textln()
+            self._print_title(ticket.name)
+            self.printer.textln()
+            self._print_icon(ticket.icon)
+            self.printer.textln()
             self._print_info(ticket.description)
             self.printer.cut()
         except Exception as e:
@@ -108,52 +113,57 @@ from PIL import Image
 class FakePrinter:
     def __init__(self, ticket_width=40):
         self.ticket_width = ticket_width  # characters
-        self.logs = []  # optional, store output for tests
+        self.logs = []  # keep text output for debugging/tests
+        self.align = "left"
+        self.bold = False
+        self.width = 1
+        self.height = 1
+
+    def _line(self, char="─"):
+        return char * self.ticket_width
 
     def set(self, align="left", bold=False, width=1, height=1, **kwargs):
         self.align = align
         self.bold = bold
         self.width = width
         self.height = height
-        # Simulate style info in console
-        print(f"[SET] align={align}, bold={bold}, width={width}, height={height}")
 
     def _format_text(self, txt):
-        # Apply bold simulation
         if self.bold:
             txt = txt.upper()
-        # Center or left align
         if self.align == "center":
             txt = txt.center(self.ticket_width)
+        elif self.align == "right":
+            txt = txt.rjust(self.ticket_width)
+        else:
+            txt = txt.ljust(self.ticket_width)
         return txt
 
     def text(self, txt):
-        # Print text without newline
         formatted = self._format_text(txt)
         print(formatted, end="")
         self.logs.append(formatted)
 
     def textln(self, txt=""):
-        # Print text with newline
         formatted = self._format_text(txt)
         print(formatted)
         self.logs.append(formatted)
 
     def image(self, img: Image.Image, center=False):
-        # Simulate image with a placeholder box
-        width, height = img.size
-        lines = ["#" * min(width, self.ticket_width) for _ in range(min(height, 5))]
+        # ASCII placeholder for image
+        placeholder = "[#### IMAGE ####]"
         if center:
-            lines = [line.center(self.ticket_width) for line in lines]
-        for line in lines:
-            print(line)
-            self.logs.append(line)
+            placeholder = placeholder.center(self.ticket_width)
+        print(placeholder)
+        self.logs.append(placeholder)
 
     def cut(self):
-        print("-" * self.ticket_width)
-        print("--- END OF TICKET ---".center(self.ticket_width))
-        print("-" * self.ticket_width)
+        border = self._line("=")
+        print(border)
+        print("----- END OF TICKET -----".center(self.ticket_width))
+        print(border)
 
     def cashdraw(self, pin=2):
-        print(f"[CASH DRAWER OPEN PIN {pin}]".center(self.ticket_width))
-
+        msg = f"[CASH DRAWER OPEN PIN {pin}]".center(self.ticket_width)
+        print(msg)
+        self.logs.append(msg)

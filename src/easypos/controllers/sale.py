@@ -51,7 +51,7 @@ class SaleController():
                 ticket = TicketModel(sale_id=sale.id, name=item.name, icon=item.icon, description=description, item_id=item.id)
                 ticket_id = TicketService.add_ticket(ticket)
 
-                self.ticket_queue.put(ticket_id)
+                self.ticket_queue.put(ticket)
                 logger.info(f"Ticket {ticket_id} added to queue")
 
             except Exception as e:

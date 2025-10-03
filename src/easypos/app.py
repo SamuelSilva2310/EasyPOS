@@ -23,7 +23,7 @@ class EasyPOSApp():
         logger.info(f"Loaded {len(items)} items")
 
 
-        ui_app = UIApp(items)
+        ui_app = UIApp(items, self.sale_controller)
         ui_app.run()
 
         

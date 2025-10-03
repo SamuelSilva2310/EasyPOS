@@ -1,8 +1,10 @@
-import tkinter as tk
+import customtkinter as ctk
 import os
 from PIL import Image, ImageTk
 
-class ItemsFrame(tk.Frame):
+BUTTON_GRID_COLS = 3
+
+class ItemsFrame(ctk.CTkFrame):
     def __init__(self, parent, items, select_callback=None, button_width=120, button_height=80):
         """
         :param parent: Parent tk.Frame or tk.Tk
@@ -21,73 +23,72 @@ class ItemsFrame(tk.Frame):
         self._create_buttons()
 
     def _create_buttons(self):
+        row = 0
+        col = 0
+
         for item in self.items:
             # Prepare image if available
             photo = None
             if hasattr(item, "icon") and item.icon:
-                # photo = tk.PhotoImage(file=os.path.join("images", item.icon))
-                # photo = photo.subsample(3, 3)
-                img = Image.open(os.path.join("images", item.icon)) # convert to grayscale (item.icon)
-                img = img.resize((int(self.button_width * 0.7), int(self.button_height * 0.7)))  # adjust as needed
-                photo = ImageTk.PhotoImage(img)
-                self.button_images[item.id] = photo  # keep reference
-            
-            #photo = None # Debug
-            btn = tk.Button(
+                img_path = os.path.join("images", item.icon)
+                if os.path.exists(img_path):
+                    img = Image.open(img_path)
+                    img = img.resize((int(self.button_width * 0.7), int(self.button_height * 0.7)))
+                    photo = ImageTk.PhotoImage(img)
+                    self.button_images[item.id] = photo  # keep reference
+
+            # Create CTkButton
+            btn = ctk.CTkButton(
                 self,
                 text=item.name,
                 image=photo,
-                compound=tk.TOP,       # image above text
-                width=self.button_width,             # in text units
-                height=self.button_height,             # in text units
-                wraplength=100,       # pixels for text wrapping
-                relief="raised",
-                bg="lightgray",
+                compound="top",  # image above text
+                width=self.button_width,
+                height=self.button_height,
+                #wraplength=100,
+                fg_color="lightgray",
+                hover_color="gray"
             )
-            # btn = tk.Button(
-            #     self,
-            #     text=item.name,
-            #     image=photo,
-            #     compound="top",  # image above text
-            #     width=self.button_width // 10,
-            #     height=self.button_height // 20,
-            #     relief="raised",
-            #     bg="lightgray",
-            #     wraplength=self.button_width - 10,
-            #     justify="center"
-            # )
-            btn.pack(padx=5, pady=5)
+            btn.grid(row=row, column=col, padx=5, pady=5, sticky="nsew")
+
+            # Store button
             self.buttons[item.id] = btn
 
-            # Bind hover events
+            # Hover and selection bindings
             btn.bind("<Enter>", lambda e, b=btn: self._on_hover(b))
             btn.bind("<Leave>", lambda e, b=btn, i=item: self._on_leave(b, i))
+            btn.configure(command=lambda i=item: self._on_select(i))
 
-            # Selection
-            btn.config(command=lambda i=item: self._on_select(i))
+            # Update row/column
+            col += 1
+            if col >= BUTTON_GRID_COLS:
+                col = 0
+                row += 1
+
+        # Make columns expand evenly
+        for c in range(BUTTON_GRID_COLS):
+            self.grid_columnconfigure(c, weight=1)
 
     def _on_hover(self, button):
-        # Only hover effect if not selected
         if self.selected_item is None or button != self.buttons[self.selected_item.id]:
-            button.config(bg="darkgray")
+            button.configure(fg_color="darkgray")
 
     def _on_leave(self, button, item):
-        # Restore color based on selection
         if self.selected_item and item.id == self.selected_item.id:
-            button.config(bg="lightblue")
+            button.configure(fg_color="lightblue")
         else:
-            button.config(bg="lightgray")
+            button.configure(fg_color="lightgray")
 
     def _on_select(self, item):
         # Deselect previous
         if self.selected_item:
             prev_btn = self.buttons[self.selected_item.id]
-            prev_btn.config(bg="lightgray", relief="raised")
+            prev_btn.configure(fg_color="lightgray")
 
         # Select new
         self.selected_item = item
         btn = self.buttons[item.id]
-        btn.config(bg="lightblue", relief="sunken")
+        btn.configure(fg_color="lightblue")
 
         # Call external callback
         if self.select_callback:
