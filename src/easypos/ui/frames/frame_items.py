@@ -3,6 +3,7 @@ import os
 from PIL import Image, ImageTk
 
 BUTTON_GRID_COLS = 3
+IMAGE_SCALE_FACTOR = 0.6
 
 class ItemsFrame(ctk.CTkFrame):
     def __init__(self, parent, items, select_callback=None, button_width=120, button_height=80):
@@ -33,8 +34,10 @@ class ItemsFrame(ctk.CTkFrame):
                 img_path = os.path.join("images", item.icon)
                 if os.path.exists(img_path):
                     img = Image.open(img_path)
-                    img = img.resize((int(self.button_width * 0.7), int(self.button_height * 0.7)))
-                    photo = ImageTk.PhotoImage(img)
+                    image_width = self.button_width * IMAGE_SCALE_FACTOR
+                    image_height = self.button_height * IMAGE_SCALE_FACTOR
+                    #img = img.resize((int(self.button_width * IMAGE_SCALE_FACTOR), int(self.button_height * IMAGE_SCALE_FACTOR)))
+                    photo = ctk.CTkImage(img, size=(image_width, image_height))
                     self.button_images[item.id] = photo  # keep reference
 
             # Create CTkButton
@@ -46,8 +49,7 @@ class ItemsFrame(ctk.CTkFrame):
                 width=self.button_width,
                 height=self.button_height,
                 #wraplength=100,
-                fg_color="lightgray",
-                hover_color="gray"
+                #hover_color="red"
             )
             btn.grid(row=row, column=col, padx=5, pady=5, sticky="nsew")
 
@@ -77,7 +79,7 @@ class ItemsFrame(ctk.CTkFrame):
         if self.selected_item and item.id == self.selected_item.id:
             button.configure(fg_color="lightblue")
         else:
-            button.configure(fg_color="lightgray")
+            button.configure(fg_color=None)
 
     def _on_select(self, item):
         # Deselect previous

@@ -7,8 +7,8 @@ from easypos.controllers.item import ItemController
 from easypos.controllers.sale import SaleController
 
 # Set global theme for CTk
-ctk.set_default_color_theme("green")  # or "green", "dark-blue"
-ctk.set_appearance_mode("dark")  # or "light"
+ctk.set_appearance_mode("light")   # Options: "light", "dark", "system"
+ctk.set_default_color_theme("green")  # Options: "blue", "green", "dark-blue", or a JSON custom theme
 
 class UIApp(ctk.CTk):
 
@@ -23,6 +23,7 @@ class UIApp(ctk.CTk):
         self.rightFrame = None 
         
         self.items = items
+        # create a sample button
         self._configure_layout()
 
     def _configure_layout(self):
