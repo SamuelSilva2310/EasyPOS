@@ -1,12 +1,16 @@
 
 import customtkinter as ctk
 from easypos.ui.frames.frame_actions import ActionsFrame
+from easypos.ui.settings import UISettings
 
 class LayoutRight(ctk.CTkFrame):
     def __init__(self, parent, sale_controller):
         super().__init__(parent)
         
-        ctk.CTkLabel(self, text="Actions", font=("Arial", 16)).pack(pady=5)
+        title = ctk.CTkLabel(self, text="Ações")
+        title.pack(pady=UISettings.SPACING.get("medium"))
+        UISettings.style_title(title, primary=True)
+
 
         # Add ActionsFrame
         self.actions_frame = ActionsFrame(self, sale_controller)

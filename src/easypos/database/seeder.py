@@ -24,8 +24,8 @@ def seed_items():
             if row is None:
                 logger.info(f"Seeding item: {item['name']}")
                 db.execute(
-                    "INSERT INTO items (name, price, icon) VALUES (?, ?, ?)",
-                    (item["name"], item["price"], item["icon"])
+                    "INSERT INTO items (name, price, icon, category) VALUES (?, ?, ?, ?)",
+                    (item["name"], item["price"], item["icon"], item["category"]),
                 )
             else:
                 # optional: update price/stock if needed

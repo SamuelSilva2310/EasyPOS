@@ -14,7 +14,8 @@ CREATE TABLE IF NOT EXISTS items (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
     price REAL NOT NULL,
-    icon TEXT
+    icon TEXT, 
+    category TEXT,
     created_at TEXT NOT NULL DEFAULT current_timestamp,
     updated_at DATETIME DEFAULT current_timestamp
 );

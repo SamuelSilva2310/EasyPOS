@@ -1,5 +1,5 @@
 import customtkinter as ctk
-
+from easypos.ui.settings import UISettings
 from easypos.ui.layout_left import LayoutLeft
 from easypos.ui.layout_right import LayoutRight
 
@@ -7,15 +7,14 @@ from easypos.controllers.item import ItemController
 from easypos.controllers.sale import SaleController
 
 # Set global theme for CTk
-ctk.set_appearance_mode("light")   # Options: "light", "dark", "system"
-ctk.set_default_color_theme("green")  # Options: "blue", "green", "dark-blue", or a JSON custom theme
+UISettings.apply_theme()
 
 class UIApp(ctk.CTk):
 
     def __init__(self, items, sale_controller):
         super().__init__()
         self.title("EasyPOS")
-        self.geometry("800x600")
+        self.geometry(UISettings.APP_WINDOW_SIZE)
 
         self.sale_controller = sale_controller
         
