@@ -34,7 +34,7 @@ class TicketService:
             db.execute("SELECT * FROM tickets WHERE id = ?", (ticket_id,))
             row = db.fetchone()
             if row:
-                return TicketModel(id=row[0], item_id=row[1], sale_id=row[2], name=row[3], description=row[4], icon=row[5], printed=row[6])
+                return TicketModel(**row)
             else:
                 raise ValueError(f"Ticket with ID {ticket_id} not found")
 
@@ -42,7 +42,7 @@ class TicketService:
     def get_tickets(cls) -> list[TicketModel]:
         with DBConnection() as db:
             db.execute("SELECT * FROM tickets")
-            return [TicketModel(id=row[0], item_id=row[1], sale_id=row[2], name=row[3], description=row[4], icon=row[5], printed=row[6]) for row in db.fetchall()]
+            return [TicketModel(**row) for row in db.fetchall()]
     @classmethod
     def set_printed(cls, ticket_id):
         with DBConnection() as db:

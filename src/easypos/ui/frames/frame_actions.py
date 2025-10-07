@@ -1,26 +1,23 @@
 import customtkinter as ctk
 from PIL import Image, ImageTk
-import os
 import logging
 from easypos.ui.settings import UISettings
 
 logger = logging.getLogger(__name__)
 
 class ActionsFrame(ctk.CTkFrame):
-    def __init__(self, parent, sale_controller, button_width=120, button_height=80):
+    def __init__(self, parent, sale_controller, on_sale_complete=None):
         super().__init__(parent)
         self.sale_controller = sale_controller
-
-        self.item = None
-        self.button_width = button_width
-        self.button_height = button_height
-
+        self.on_sale_complete = on_sale_complete
+        self.cart_items = {}
         # State variables
-        self.quantity_var = ctk.StringVar(value="1")
         self.money_var = ctk.StringVar(value="")
+        self.total_price_var = ctk.StringVar(value="0.00 €")
+        self.change_var = ctk.StringVar(value="0.00 €")
 
-        # Layout
-        self.grid_rowconfigure((0, 1, 2, 3, 4, 5, 6, 7), weight=0)
+        # Layout config
+        self.grid_rowconfigure((0, 1, 2, 3), weight=1)
         self.grid_columnconfigure((0, 1), weight=1)
 
         self._create_components()
@@ -29,119 +26,94 @@ class ActionsFrame(ctk.CTkFrame):
         padding_y = 6
         padding_x = 8
 
-        # --- Item Header ---
-        self.icon_label = ctk.CTkLabel(self, text="", width=60, height=60)
-        self.icon_label.grid(row=0, column=0, columnspan=2, pady=(10, 4))
+        # --- TOTAL SECTION ---
+        total_frame = ctk.CTkFrame(self, fg_color="transparent")
+        total_frame.grid(row=0, column=0, columnspan=2, sticky="ew", padx=padding_x, pady=(padding_y, 0))
 
-        self.title_label = ctk.CTkLabel(
-            self,
-            text="Selecione um artigo",
-            font=ctk.CTkFont(size=16, weight="bold")
+        ctk.CTkLabel(total_frame, text="💵 Total:").grid(row=0, column=0, sticky="e", padx=padding_x)
+        self.label_total_price = ctk.CTkLabel(
+            total_frame,
+            textvariable=self.total_price_var,
+            font=ctk.CTkFont(size=16, weight="bold"),
         )
-        self.title_label.grid(row=1, column=0, columnspan=2, pady=(0, 10))
+        self.label_total_price.grid(row=0, column=1, sticky="w", padx=padding_x)
 
-        # --- Item info section ---
-        info_frame = ctk.CTkFrame(self, fg_color="transparent")
-        info_frame.grid(row=2, column=0, columnspan=2, sticky="ew", padx=padding_x)
-
-        # Quantity
-        ctk.CTkLabel(info_frame, text="Quantidade:").grid(row=0, column=0, sticky="e", padx=padding_x, pady=padding_y)
-        self.input_quantity = ctk.CTkEntry(info_frame, textvariable=self.quantity_var, width=80)
-        self.input_quantity.grid(row=0, column=1, sticky="w", padx=padding_x, pady=padding_y)
-
-        # Unit Price
-        ctk.CTkLabel(info_frame, text="Preço unitário:").grid(row=1, column=0, sticky="e", padx=padding_x, pady=padding_y)
-        self.label_item_price = ctk.CTkLabel(info_frame, text="0,00 €")
-        self.label_item_price.grid(row=1, column=1, sticky="w", padx=padding_x, pady=padding_y)
-
-        # Total
-        ctk.CTkLabel(info_frame, text="Total:").grid(row=2, column=0, sticky="e", padx=padding_x, pady=padding_y)
-        self.label_total_price = ctk.CTkLabel(info_frame, text="0,00 €", font=ctk.CTkFont(weight="bold"))
-        self.label_total_price.grid(row=2, column=1, sticky="w", padx=padding_x, pady=padding_y)
-
-        # --- Payment section ---
+        # --- PAYMENT SECTION ---
         payment_frame = ctk.CTkFrame(self, fg_color="transparent")
-        payment_frame.grid(row=3, column=0, columnspan=2, sticky="ew", padx=padding_x, pady=(10, 0))
+        payment_frame.grid(row=1, column=0, columnspan=2, sticky="ew", padx=padding_x, pady=(padding_y, 0))
 
-        ctk.CTkLabel(payment_frame, text="Dinheiro recebido:").grid(row=0, column=0, sticky="e", padx=padding_x, pady=padding_y)
-        self.input_money_handed = ctk.CTkEntry(payment_frame, textvariable=self.money_var, width=100)
+        ctk.CTkLabel(payment_frame, text="💰 Dinheiro recebido:").grid(
+            row=0, column=0, sticky="e", padx=padding_x, pady=padding_y
+        )
+        self.input_money_handed = ctk.CTkEntry(payment_frame, textvariable=self.money_var, width=120)
         self.input_money_handed.grid(row=0, column=1, sticky="w", padx=padding_x, pady=padding_y)
 
-        ctk.CTkLabel(payment_frame, text="Troco:").grid(row=1, column=0, sticky="e", padx=padding_x, pady=padding_y)
-        self.label_change = ctk.CTkLabel(payment_frame, text="0,00 €", font=ctk.CTkFont(weight="bold"))
+        ctk.CTkLabel(payment_frame, text="💸 Troco:").grid(
+            row=1, column=0, sticky="e", padx=padding_x, pady=padding_y
+        )
+        self.label_change = ctk.CTkLabel(
+            payment_frame,
+            textvariable=self.change_var,
+            font=ctk.CTkFont(size=14, weight="bold"),
+        )
         self.label_change.grid(row=1, column=1, sticky="w", padx=padding_x, pady=padding_y)
 
-        # --- Sell button ---
+        # --- SELL BUTTON ---
         self.button_sell = ctk.CTkButton(
             self,
-            text="💰 Vender",
+            text="Vender",
             command=self.sell,
             height=38,
-            width=150,
-            corner_radius=10,
+            width=180,
+            corner_radius=8,
         )
-        self.button_sell.grid(row=4, column=0, columnspan=2, pady=(15, 10))
+        self.button_sell.grid(row=2, column=0, columnspan=2, pady=(padding_y * 2, padding_y))
 
-        # Binds
-        self.quantity_var.trace_add("write", self._on_change)
-        self.money_var.trace_add("write", self._on_change)
+        # Trace entry changes
+        self.money_var.trace_add("write", self._on_money_change)
 
-    def update_ui(self, item):
+    # ---------------- LOGIC ---------------- #
 
-        self.item = item
-        self.title_label.configure(text=item.name)
+    def update_ui(self, cart_items):
+        """Update total when cart changes."""
 
-        self.quantity_var.set("1")
-        self.money_var.set("")
-        self.label_item_price.configure(text=f"{item.price:.2f} €")
-        self.label_total_price.configure(text=f"{item.price:.2f} €")
-        self.label_change.configure(text="0,00 €")
+        self.cart_items = cart_items
+        total = 0.0
+        for data in cart_items.values():
+            item = data["item"]
+            quantity = data["quantity"]
+            total += item.price * quantity
 
-        image_path = os.path.join("images", getattr(item, "icon", ""))
-        if hasattr(item, "icon") and item.icon and os.path.exists(image_path):
-            img = Image.open(image_path).resize((60, 60))
-            photo = ImageTk.PhotoImage(img)
-            self.icon_label.configure(image=photo, text="")
-            self.icon_label.image = photo
-        else:
-            self.icon_label.configure(image="", text="")
+        self.total_price_var.set(f"{total:.2f} €")
+        self._on_money_change()  # update change immediately
 
-    def _on_change(self, *args):
-        """Recalcula o total e o troco quando a quantidade ou o dinheiro mudam."""
-        if not self.item:
-            return
-
+    def _on_money_change(self, *args):
+        """Recalculate change dynamically."""
         try:
-            quantity = int(self.quantity_var.get())
-            if quantity < 0:
-                quantity = 0
+            total_str = self.total_price_var.get().replace("€", "").strip()
+            total = float(total_str) if total_str else 0.0
         except ValueError:
-            quantity = 0
-
-        total = self.item.price * quantity
-        self.label_total_price.configure(text=f"{total:.2f} €")
+            total = 0.0
 
         try:
-            money = float(self.money_var.get())
+            money = float(self.money_var.get().replace(",", "."))
         except ValueError:
             money = 0.0
 
         change = money - total
-        self.label_change.configure(text=f"{change:.2f} €")
+        self.change_var.set(f"{change:.2f} €")
 
     def sell(self):
-        """Executa a venda do item selecionado."""
-        if not self.item:
-            ctk.CTkMessagebox.show_warning("Nenhum item", "Selecione um artigo primeiro.")
-            return
+        """Finalize the sale for all items in cart."""
+        logger.info("Processing sale for cart...")
 
-        try:
-            quantity = int(self.quantity_var.get())
-            if quantity <= 0:
-                raise ValueError
-        except ValueError:
-            ctk.CTkMessagebox.show_error("Quantidade inválida", "Insira uma quantidade válida.")
-            return
+        # Call controller (you can handle DB + printing here)
+        self.sale_controller.make_sale(self.cart_items)
 
-        logger.info(f"Vendendo {quantity} de {self.item.name}")
-        self.sale_controller.make_sale(self.item.id, quantity)
+        # Reset fields
+        # self.money_var.set("")
+        # self.total_price_var.set("0.00 €")
+        # self.change_var.set("0.00 €")
+        if self.on_sale_complete:
+            self.on_sale_complete()
+        

@@ -1,4 +1,4 @@
-from easypos.models.sale import SaleModel, SaleService
+from easypos.models.sale import SaleModel, SaleService, SaleItemModel
 from easypos.models.item import ItemService
 from easypos.models.ticket import TicketModel, TicketService
 from easypos.printer.easy_printer import EasyPrinter
@@ -16,49 +16,67 @@ class SaleController():
         self.printer = EasyPrinter(printer_connection_type)
         logger.info("Initialized SaleController")
 
-    def make_sale(self, item_id, quantity):
+    def make_sale(self, cart_items):
 
-        if quantity <= 0:
-            raise ValueError("Quantity must be positive")
-    
+        if not cart_items:
+            raise ValueError("No items in to sell")
+
+
         
-        item = ItemService.get_item_by_id(item_id)
-        if not item:
-            raise ValueError(f"Item with ID {item_id} not found")
+        total = 0
+        for item_id, data in cart_items.items():
+            item = data["item"]
+            quantity = data["quantity"]
+
+            item_price = item.price
+            total_price = item_price * quantity 
+            total += total_price
+
+        sale = SaleModel(total_price=total)
+        logger.info(f"Creating sale: {sale}")
+        sale = SaleService.make_sale(sale)
+            
+        # Process each item
+        for item_id, data in cart_items.items():
+            item = data["item"]
+            quantity = data["quantity"]
+
+            self._process_item(sale, data)
 
 
-        item_price = item.price
-        total_price = item_price * quantity 
-        sale = SaleModel(item_id=item_id, quantity=quantity, total_price=total_price)
+        self.print_tickets(cart_items, sale)
 
-        logger.info(f"New sale: {sale}")
-    
-        sale = SaleService.add_sale(sale)
-        self.print_tickets(item, sale)
+    def _process_item(self, sale, data):
+        item = data["item"]
+        quantity = data["quantity"]
+        sale_item = SaleItemModel(sale_id=sale.id, item_id=item.id, quantity=quantity, total_price=item.price * quantity)
+        SaleService.add_item_to_sale(sale_item)
+        
 
-
-    def print_tickets(self, item, sale):
+    def print_tickets(self, cart_items, sale):
 
         logger.info(f"Printing tickets for sale {sale.id}")
         status = True
-        for i in range(1, sale.quantity+1):
+        for item_id, data in cart_items.items():
+            item = data["item"]
+            quantity = data["quantity"]
+            logger.info(f"Creating {quantity} tickets for item {item.name}")
+            for i in range(1, quantity+1):
+                try:
+                    logger.info(f"Creating ticket {i}/{quantity}")
+                    current_date = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
+                    description = f"#{sale.id}\n{current_date}"
+                    ticket = TicketModel(sale_id=sale.id, name=item.name, icon=item.icon, description=description, item_id=item.id)
+                    ticket = TicketService.add_ticket(ticket)
 
-            try:
-                logger.info(f"Printing ticket #{i}/{sale.quantity}")
+                    self.ticket_queue.put(ticket)
+                    logger.info(f"Ticket {ticket.id} added to queue")
+
+                except Exception as e:
+                    logger.error(f"Failed to print ticket: {e}")
+                    traceback.print_exc()
+                    status = False
                 
-                current_date = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
-                description = f"#{sale.id}\n{current_date}"
-                ticket = TicketModel(sale_id=sale.id, name=item.name, icon=item.icon, description=description, item_id=item.id)
-                ticket_id = TicketService.add_ticket(ticket)
-
-                self.ticket_queue.put(ticket)
-                logger.info(f"Ticket {ticket_id} added to queue")
-
-            except Exception as e:
-                logger.error(f"Failed to print ticket: {e}")
-                traceback.print_exc()
-                status = False
-        
         if status:
             SaleService.set_printed(sale.id)
             logger.info(f"Sale {sale.id} printed successfully")
