@@ -1,7 +1,7 @@
 from easypos.database.connection import DB_PATH
 import sqlite3
 from easypos.database.migrate import migrate
-from easypos.database.seeder import seed_items
+from easypos.database.seeder import seed_categories,seed_items
 
 import logging
 
@@ -23,5 +23,6 @@ def init_db():
     # Apply migrations
     migrate()
 
-    # Seed items
+    # Seed data
+    seed_categories()
     seed_items()

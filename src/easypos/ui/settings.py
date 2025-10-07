@@ -6,7 +6,7 @@ class UISettings:
     IMAGES_PATH = "images"
 
     # --- Global UI theme settings ---
-    THEME_MODE = "light"            # options: "light", "dark", "system"
+    THEME_MODE = "System"            # options: "light", "dark", "system"
     COLOR_THEME = "blue"           # options: "blue", "green", "dark-blue"
     FONT_FAMILY = "Arial"
     FONT_SIZE_TITLE = 18

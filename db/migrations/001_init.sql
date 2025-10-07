@@ -1,4 +1,13 @@
 -- schema.sql
+CREATE TABLE IF NOT EXISTS categories (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    slug TEXT NOT NULL,
+    label TEXT NOT NULL,
+    icon TEXT NOT NULL,    
+    created_at TEXT NOT NULL DEFAULT current_timestamp,
+    updated_at DATETIME DEFAULT current_timestamp
+);
+
 CREATE TABLE IF NOT EXISTS sales (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     total_price REAL NOT NULL,
@@ -12,9 +21,10 @@ CREATE TABLE IF NOT EXISTS items (
     name TEXT NOT NULL,
     price REAL NOT NULL,
     icon TEXT, 
-    category TEXT,
+    category_id int,
     created_at TEXT NOT NULL DEFAULT current_timestamp,
-    updated_at DATETIME DEFAULT current_timestamp
+    updated_at DATETIME DEFAULT current_timestamp,
+    FOREIGN KEY (category_id) REFERENCES category (id)
 );
 
 CREATE TABLE IF NOT EXISTS sales_items (
@@ -39,6 +49,8 @@ CREATE TABLE IF NOT EXISTS tickets (
     updated_at DATETIME DEFAULT current_timestamp,
     FOREIGN KEY (item_id) REFERENCES items (id)
 );
+
+
 
 CREATE TABLE IF NOT EXISTS schema_migrations (
     id INTEGER PRIMARY KEY AUTOINCREMENT,

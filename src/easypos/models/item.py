@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from easypos.database.connection import DBConnection
 from typing import Optional
+from datetime import datetime
 
 
 @dataclass
@@ -11,7 +12,12 @@ class ItemModel():
     price: float = 0.0
     icon: str = ""
     description: str = ""
+    category_id: Optional[int] = None
+
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
     
+
     def __post_init__(self):
         """Validate data after initialization."""
         if self.price < 0:
@@ -32,7 +38,7 @@ class ItemService:
     def get_items(cls) -> list[ItemModel]:
         with DBConnection() as db:
             db.execute("SELECT * FROM items")
-            return [ItemModel(id=row[0], name=row[1], price=row[2], icon=row[3], description=row[4]) for row in db.fetchall()]
+            return [ItemModel(**row) for row in db.fetchall()]
         
     @classmethod    
     def get_item_by_id(cls, item_id: int) -> ItemModel:
@@ -40,6 +46,6 @@ class ItemService:
             db.execute("SELECT * FROM items WHERE id = ?", (item_id,))
             row = db.fetchone()
             if row:
-                return ItemModel(id=row[0], name=row[1], price=row[2], icon=row[3], description=row[4])
+                return ItemModel(**row)
             else:
                 raise ValueError(f"Item with ID {item_id} not found")

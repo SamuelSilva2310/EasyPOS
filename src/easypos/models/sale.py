@@ -32,6 +32,9 @@ class SaleItemModel():
     quantity: int
     total_price: float
 
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
+
 
 class SaleService:
 
