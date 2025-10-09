@@ -10,9 +10,9 @@ logger = logging.getLogger(__name__)
 
 class EasyPOSApp():
 
-    def __init__(self, ticket_queue, printer_connection_type):
+    def __init__(self, ticket_queue):
         self.item_controller = ItemController()
-        self.sale_controller = SaleController(ticket_queue, printer_connection_type)
+        self.sale_controller = SaleController(ticket_queue)
         self.queue = ticket_queue
 
     def run(self):

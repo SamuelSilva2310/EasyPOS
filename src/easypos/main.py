@@ -10,15 +10,28 @@ from queue import Queue
 from easypos.database.bootstrap import init_db
 from easypos.app import EasyPOSApp
 from easypos.printer.consumer import start_consumer
+from easypos.printer.printer_manager import PrinterManager
 
+from easypos.settings import AppSettings
 
 
 def main(args):
 
     logger.info("Starting EasyPOS...")
 
+    # Load app settings
+    settings = AppSettings.get_instance()
+    printer_connection_type = settings.get("printer_connection_type")
+    printer_connection_args = settings.get("printer_connection_args", {}).get(printer_connection_type)
+
+
     # Initialize database
     init_db()
+
+    # Initialize printer
+    printer = PrinterManager.get_instance()
+    printer.connect(printer_connection_type, printer_connection_args)
+    logger.info(f"Printer connected: {printer.status()}")
 
     # Shared queue
     ticket_queue = Queue()
@@ -26,13 +39,12 @@ def main(args):
     # Start consumer thread first
     consumer_thread = threading.Thread(
         target=start_consumer,
-        args=(args.printer_connection_type, ticket_queue),
+        args=(ticket_queue,),
         daemon=True
     )
     consumer_thread.start()
-
     # Start the app (UI or CLI)
-    app = EasyPOSApp(ticket_queue, args.printer_connection_type)
+    app = EasyPOSApp(ticket_queue)
     app.run()   # This may block, which is okay because consumer is already running
 
 

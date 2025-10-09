@@ -1,7 +1,7 @@
 from easypos.models.sale import SaleModel, SaleService, SaleItemModel
 from easypos.models.item import ItemService
 from easypos.models.ticket import TicketModel, TicketService
-from easypos.printer.easy_printer import EasyPrinter
+from easypos.printer.printer_manager import PrinterManager
 
 import traceback
 from datetime import datetime
@@ -11,9 +11,9 @@ logger = logging.getLogger(__name__)
 
 class SaleController():
 
-    def __init__(self, ticket_queue, printer_connection_type):
+    def __init__(self, ticket_queue):
         self.ticket_queue = ticket_queue
-        self.printer = EasyPrinter(printer_connection_type)
+        self.printer = PrinterManager.get_instance()
         logger.info("Initialized SaleController")
 
     def make_sale(self, cart_items):
@@ -21,7 +21,7 @@ class SaleController():
         if not cart_items:
             raise ValueError("No items in to sell")
 
-
+        self.printer.open_cashdrawer(5)
         
         total = 0
         for item_id, data in cart_items.items():

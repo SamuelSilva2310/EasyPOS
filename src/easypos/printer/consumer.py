@@ -1,15 +1,15 @@
 import threading
 import time
-from easypos.printer.easy_printer import EasyPrinter
+from easypos.printer.printer_manager import PrinterManager
 from easypos.models.ticket import TicketService
 
 import logging
 logger = logging.getLogger(__name__)
 
-def start_consumer(printer_type, queue):
+def start_consumer(queue):
     
     logger.info("Starting printer consumer...")
-    printer = EasyPrinter(printer_type)
+    printer = PrinterManager.get_instance()
     while True:
         ticket = queue.get()  # blocks until an item is available
         try:
