@@ -21,7 +21,9 @@ class LayoutRight(ctk.CTkFrame):
         #self.actions_frame.config(bg="#50e3c2")      # or self.cget("bg")
         self.actions_frame.pack(fill="both", expand=True)
 
-
+    def refresh(self):
+        self.shopping_cart_frame.clear_cart()
+        
     def item_selected(self, item):
         """
         Called when an item is selected in the ItemsFrame.

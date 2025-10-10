@@ -37,6 +37,7 @@ class ItemsFrame(ctk.CTkScrollableFrame):
     # UI Setup
     # -------------------------------
 
+
     def _style(self):
         self.configure(border_width=0, corner_radius=0, fg_color="transparent")
 
@@ -51,6 +52,10 @@ class ItemsFrame(ctk.CTkScrollableFrame):
             font=ctk.CTkFont(size=16, weight="bold"),
         )
         label.pack(side="left", padx=10, anchor="w")
+
+    def refresh(self, items):
+        self.items = items
+        self._create_buttons_grid(self.items)
 
     # -------------------------------
     # Button Grid
@@ -172,3 +177,5 @@ class ItemsFrame(ctk.CTkScrollableFrame):
 
         self.selected_item = None
         self._create_buttons_grid(filtered_items)
+
+    

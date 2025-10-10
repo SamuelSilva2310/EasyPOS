@@ -19,6 +19,7 @@ class CategoriesFrame(ctk.CTkFrame):
         self.selected_category = None
         self.buttons = {}
         self.button_images = {}
+        self.buttons_frame = None
 
         self._style()
         self._create_header("Categorias")
@@ -42,9 +43,19 @@ class CategoriesFrame(ctk.CTkFrame):
         )
         title_label.pack(anchor="w", padx=10, pady=(UISettings.SPACING["medium"], 2))
 
+    def _clear_buttons(self):
+        """Destroy existing buttons frame and its buttons."""
+        if self.buttons_frame:
+            self.buttons_frame.destroy()
+            self.buttons_frame = None
+        self.buttons.clear()
+        self.button_images.clear()
+
     def _create_buttons(self):
         """Create horizontally scrollable category buttons with compact height."""
         # Create scroll frame with fixed height matching buttons
+        if self.buttons_frame:
+            self._clear_buttons()
         self.buttons_frame = ctk.CTkFrame(
             self,
             fg_color="transparent",
@@ -89,7 +100,9 @@ class CategoriesFrame(ctk.CTkFrame):
 
         # Ensure the scroll frame doesn't expand vertically
         #self.scroll_frame.grid_propagate(False)
-
+    def refresh(self, categories):
+        self.categories = categories
+        self._create_buttons()
     # -------------------------------
     # Helpers
     # -------------------------------

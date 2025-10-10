@@ -103,6 +103,9 @@ class EasyPrinter:
         finally:
             self.is_busy = False
 
+    def close(self):
+        self.printer.close()
+
     def open_cashdrawer(self, pin=2):
         try:
             self.printer.cashdraw(pin)

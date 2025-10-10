@@ -62,3 +62,6 @@ class FakePrinter:
         msg = f"[CASH DRAWER OPEN PIN {pin}]".center(self.ticket_width)
         print(msg)
         self.logs.append(msg)
+
+    def close():
+        pass

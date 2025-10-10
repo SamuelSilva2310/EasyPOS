@@ -12,6 +12,7 @@ class PrinterManager:
         self.printer = None
         self.connected = False
         self.connection_type = None
+        self.connection_args = {}
         self.lock = threading.Lock()
 
     @classmethod
@@ -20,49 +21,82 @@ class PrinterManager:
             cls._instance = PrinterManager()
         return cls._instance
 
-    def connect(self, connection_type="usb", connection_args={}):
-        """
-        Connects to the printer. If already connected, safely closes the previous connection
-        and reconnects using the new type.
-        """
+    def connect(self, connection_type="usb", connection_args=None):
+        """Safely connect or reconnect to the printer."""
+        if connection_args is None:
+            connection_args = {}
+
+        logger.info(f"Connecting to printer using {connection_type}...")
+
         with self.lock:
-            # Close existing printer safely
-            if self.printer is not None:
+            # Always remember the requested connection info
+            self.connection_type = connection_type
+            self.connection_args = connection_args
+
+            # Close any previous connection safely
+            if self.printer:
                 try:
-                    if hasattr(self.printer, "close"):
-                        self.printer.close()
+                    # Some fake printers have close() without 'self'
+                    close_fn = getattr(self.printer, "close", None)
+                    if callable(close_fn):
+                        try:
+                            close_fn()
+                        except TypeError:
+                            close_fn(self.printer)
                 except Exception as e:
-                    # Log but ignore errors during closing
-                    print(f"Warning: error closing previous printer: {e}")
+                    logger.warning(f"Error closing previous printer: {e}")
                 finally:
                     self.printer = None
                     self.connected = False
 
-            # Try to create a new printer connection
+            # Try to connect
             try:
-                self.printer = EasyPrinter(connection_type, connection_args)
+                printer = EasyPrinter(connection_type, connection_args)
+                # Verify connection
+                if hasattr(printer, "_check_connection"):
+                    is_connected = printer._check_connection()
+                else:
+                    is_connected = True  # Assume connected if not checkable
+
+                if not is_connected:
+                    logger.warning("Printer _check_connection() returned False.")
+                    self.connected = False
+                    self.printer = None
+                    return False
+
+                self.printer = printer
                 self.connected = True
-                self.connection_type = connection_type
-                logger.info("Connected to printer")
-            except PrinterConnectionError as e:
+                logger.info("Printer connected successfully.")
+                return True
+
+            except Exception as e:
+                self.printer = None
+                self.connected = False
+                logger.error(f"Failed to connect to printer: {e}")
+                return False
+
+    def check_connection(self):
+        """Check if the printer is still connected."""
+        with self.lock:
+            if not self.printer:
+                self.connected = False
+                return False
+
+            try:
+                is_connected = self.printer._check_connection()
+                self.connected = bool(is_connected)
+                if not self.connected:
+                    logger.warning("Printer appears to be disconnected.")
+                return self.connected
+            except Exception as e:
+                logger.warning(f"Printer check_connection() failed: {e}")
                 self.connected = False
                 self.printer = None
-                logger.error(f"Error connecting to printer: {e}")
-                
-
-    def print_ticket(self, ticket):
-        if not self.connected:
-            raise PrinterConnectionError("Printer not connected")
-        with self.lock:
-            self.printer.print_ticket(ticket)
-
-    def open_cashdrawer(self, pin=2):
-        if not self.connected:
-            raise PrinterConnectionError("Printer not connected")
-        with self.lock:
-            self.printer.open_cashdrawer(pin)
+                return False
 
     def status(self):
+        """Return real printer connection status without altering previous type."""
+        self.check_connection()
         return {
             "connected": self.connected,
             "connection_type": self.connection_type,

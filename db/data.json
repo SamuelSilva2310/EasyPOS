@@ -1,120 +1,120 @@
 {
-  "categories": [
-    {
-      "id": 1,
-      "slug": "cups",
-      "label": "Copos",
-      "icon": "🥤"
-    },
-    {
-      "id": 2,
-      "slug": "drink_no_alcool",
-      "label": "Bebidas Não Alcoólicas",
-      "icon": "🥤"
-    },
-    {
-      "id": 3,
-      "slug": "food",
-      "label": "Comida",
-      "icon": "🍔"
-    },
-    {
-      "id": 4,
-      "slug": "alcoholic_drinks",
-      "label": "Bebidas Alcoólicas",
-      "icon": "🍺"
-    }
-  ],
-  "items": [
-    {
-      "name": "Copo Associação 20 cl",
-      "price": 1.00,
-      "icon": "cup.png",
-      "category_id": 1
-    },
-    {
-      "name": "Copo Associação 40 cl",
-      "price": 1.20,
-      "icon": "cup.png",
-      "category_id": 1
-    },
-    {
-      "name": "Água",
-      "price": 1.00,
-      "icon": "water.png",
-      "category_id": 2
-    },
-    {
-      "name": "Café",
-      "price": 1.00,
-      "icon": "coffee.png",
-      "category_id": 2
-    },
-    {
-      "name": "Salgados",
-      "price": 1.00,
-      "icon": "salgado.png",
-      "category_id": 3
-    },
-    {
-      "name": "Pizza",
-      "price": 3.00,
-      "icon": "pizza.png",
-      "category_id": 3
-    },
-    {
-      "name": "Bifana",
-      "price": 3.00,
-      "icon": "bifana.png",
-      "category_id": 3
-    },
-    {
-      "name": "Sumo",
-      "price": 1.50,
-      "icon": "soda.png",
-      "category_id": 2
-    },
-    {
-      "name": "Água Pedras",
-      "price": 1.50,
-      "icon": "agua_pedras.png",
-      "category_id": 2
-    },
-    {
-      "name": "Imperial",
-      "price": 1.50,
-      "icon": "beer.png",
-      "category_id": 4
-    },
-    {
-      "name": "Whiskey",
-      "price": 3.00,
-      "icon": "whiskey.png",
-      "category_id": 4
-    },
-    {
-      "name": "Moscatel",
-      "price": 2.00,
-      "icon": "moscatel.png",
-      "category_id": 4
-    },
-    {
-      "name": "Sangria",
-      "price": 2.00,
-      "icon": "sangria.png",
-      "category_id": 4
-    },
-    {
-      "name": "Cidra",
-      "price": 2.00,
-      "icon": "cider.png",
-      "category_id": 4
-    },
-    {
-      "name": "Beirão",
-      "price": 2.50,
-      "icon": "beirao.png",
-      "category_id": 4
-    }
-  ]
+    "categories": [
+        {
+            "id": 1,
+            "slug": "cups",
+            "label": "Copos",
+            "icon": "🥤"
+        },
+        {
+            "id": 2,
+            "slug": "drink_no_alcool",
+            "label": "Bebidas Não Alcoólicas",
+            "icon": "🥤"
+        },
+        {
+            "id": 3,
+            "slug": "food",
+            "label": "Comida",
+            "icon": "🍔"
+        },
+        {
+            "id": 4,
+            "slug": "alcoholic_drinks",
+            "label": "Bebidas Alcoólicas",
+            "icon": "🍺"
+        }
+    ],
+    "items": [
+        {
+            "name": "Copo Associação 20 cl",
+            "price": 5.0,
+            "icon": "cup.png",
+            "category_id": 1
+        },
+        {
+            "name": "Copo Associação 40 cl",
+            "price": 1.2,
+            "icon": "cup.png",
+            "category_id": 1
+        },
+        {
+            "name": "Água",
+            "price": 1.0,
+            "icon": "water.png",
+            "category_id": 2
+        },
+        {
+            "name": "Café",
+            "price": 1.0,
+            "icon": "coffee.png",
+            "category_id": 2
+        },
+        {
+            "name": "Salgados",
+            "price": 1.0,
+            "icon": "salgado.png",
+            "category_id": 3
+        },
+        {
+            "name": "Pizza",
+            "price": 3.0,
+            "icon": "pizza.png",
+            "category_id": 3
+        },
+        {
+            "name": "Bifana",
+            "price": 3.0,
+            "icon": "bifana.png",
+            "category_id": 3
+        },
+        {
+            "name": "Sumo",
+            "price": 1.5,
+            "icon": "soda.png",
+            "category_id": 2
+        },
+        {
+            "name": "Água Pedras",
+            "price": 1.5,
+            "icon": "agua_pedras.png",
+            "category_id": 2
+        },
+        {
+            "name": "Imperial",
+            "price": 1.5,
+            "icon": "beer.png",
+            "category_id": 4
+        },
+        {
+            "name": "Whiskey",
+            "price": 3.0,
+            "icon": "whiskey.png",
+            "category_id": 4
+        },
+        {
+            "name": "Moscatel",
+            "price": 2.0,
+            "icon": "moscatel.png",
+            "category_id": 4
+        },
+        {
+            "name": "Sangria",
+            "price": 2.0,
+            "icon": "sangria.png",
+            "category_id": 4
+        },
+        {
+            "name": "Cidra",
+            "price": 2.0,
+            "icon": "cider.png",
+            "category_id": 4
+        },
+        {
+            "name": "Beirão",
+            "price": 2.5,
+            "icon": "beirao.png",
+            "category_id": 4
+        }
+    ]
 }

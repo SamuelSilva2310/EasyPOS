@@ -19,11 +19,8 @@ class EasyPOSApp():
 
         # Display items        
         logger.info(f"Loading items...")
-        items = self.item_controller.get_items()
-        logger.info(f"Loaded {len(items)} items")
-
-
-        ui_app = UIApp(items, self.sale_controller)
+        
+        ui_app = UIApp(self.sale_controller)
         ui_app.run()
 
         

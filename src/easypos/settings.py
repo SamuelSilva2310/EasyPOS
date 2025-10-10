@@ -20,7 +20,7 @@ class AppSettings:
                 "idVendor": 1046,
                 "idProduct": 20497,
             },
-            "lan": {
+            "network": {
                 "ip": "237.84.2.178",
                 "port": 9100
             },

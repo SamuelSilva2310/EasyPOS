@@ -86,7 +86,7 @@ class ActionsFrame(ctk.CTkFrame):
         # --- SELL BUTTON ---
         self.button_sell = ctk.CTkButton(
             self,
-            text="🛒 Vender",
+            text="Vender",
             command=self.sell,
             height=48,
             width=220,

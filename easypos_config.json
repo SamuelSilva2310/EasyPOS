@@ -1,13 +1,13 @@
 {
     "theme": "dark",
-    "printer_connection_type": "usb",
+"printer_connection_type": "fake",
     "printer_connection_args": {
         "usb": {
             "idVendor": 1046,
             "idProduct": 20497
         },
-        "lan": {
-            "ip": "237.84.2.178",
+        "network": {
+            "host": "123.123.123.123",
             "port": 9100
         },
         "fake": {}

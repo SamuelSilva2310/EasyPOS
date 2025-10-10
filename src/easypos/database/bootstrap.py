@@ -1,11 +1,12 @@
 from easypos.database.connection import DB_PATH
 import sqlite3
 from easypos.database.migrate import migrate
-from easypos.database.seeder import seed_categories,seed_items
-
+from easypos.database.seeder import import_data
+from pathlib import Path
 import logging
 
 logger = logging.getLogger(__name__)
+
 
 def init_db():
     """Ensure database exists and run migrations."""
@@ -24,5 +25,4 @@ def init_db():
     migrate()
 
     # Seed data
-    seed_categories()
-    seed_items()
+    import_data()
