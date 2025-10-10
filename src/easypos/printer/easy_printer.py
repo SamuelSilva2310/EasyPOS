@@ -75,6 +75,15 @@ class EasyPrinter:
         self.printer.set(**PRINTER_STYLE_TITLE)
         self.printer.text(title)
 
+
+    def _print_logo(self, icon_path):
+        icon = Image.open(os.path.join("images", icon_path)).convert("1")
+        max_width = self.ticket_width * 0.8
+        w_percent = (max_width / float(icon.size[0]))
+        h_size = int((float(icon.size[1]) * float(w_percent)))
+        icon = icon.resize((max_width, h_size))
+        self.printer.image(icon, center=True)
+
     def _print_icon(self, icon_path):
         icon = Image.open(os.path.join("images", icon_path)).convert("1")
         max_width = self.ticket_width
@@ -91,6 +100,7 @@ class EasyPrinter:
         self.is_busy = True
         logger.info(f"Printing ticket {ticket}")
         try:
+            self._print_logo()
             self._print_title(ticket.name)
             self.printer.textln()
             self._print_icon(ticket.icon)
