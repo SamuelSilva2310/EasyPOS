@@ -1,7 +1,7 @@
 import customtkinter as ctk
 import os
 from PIL import Image
-from easypos.ui.settings import UISettings
+from easypos.ui.styles import UISettings
 from easypos.ui.components.hover_button import HoverButton
 
 BUTTON_WIDTH = 90

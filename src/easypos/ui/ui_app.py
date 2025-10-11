@@ -1,5 +1,5 @@
 import customtkinter as ctk
-from easypos.ui.settings import UISettings
+from easypos.ui.styles import UISettings
 from easypos.ui.layout_left import LayoutLeft
 from easypos.ui.layout_right import LayoutRight
 
@@ -7,6 +7,8 @@ from easypos.controllers.item import ItemController
 from easypos.controllers.sale import SaleController
 from easypos.database.seeder import import_data
 import logging
+
+from easypos.settings import APP_SETTINGS
 
 logger = logging.getLogger(__name__)
 
@@ -124,7 +126,16 @@ class UIApp(ctk.CTk):
         self.update_printer_status(printer_status.get("connected"), printer_status.get("connection_type"))
         self.after(5000, self._check_printer_status_loop)
 
+    def on_close(self):
+        """Called when the window is closed."""
+        logger.info("App is closing... saving data, cleaning up...")
+        APP_SETTINGS.save()
+        
+        
+        self.destroy()  # actually close the window
+
     def run(self):
         self.start_status_monitor()
         self.mainloop()
+
 

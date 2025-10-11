@@ -101,3 +101,15 @@ class PrinterManager:
             "connected": self.connected,
             "connection_type": self.connection_type,
         }
+    
+    def print_ticket(self, ticket):
+        with self.lock:
+            if not self.printer:
+                raise PrinterConnectionError("Printer not connected.")
+            return self.printer.print_ticket(ticket)
+        
+    def open_cashdrawer(self, pin=2):
+        with self.lock:
+            if not self.printer:
+                raise PrinterConnectionError("Printer not connected.")
+            return self.printer.open_cashdrawer(pin)

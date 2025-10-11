@@ -2,7 +2,7 @@
 import customtkinter as ctk
 from easypos.ui.frames.frame_items import ItemsFrame
 from easypos.ui.frames.frame_categories import CategoriesFrame
-from easypos.ui.settings import UISettings
+from easypos.ui.styles import UISettings
 
 from easypos.models.category import CategoryService
 from easypos.models.item import ItemService

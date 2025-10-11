@@ -1,14 +1,18 @@
 {
+    "title": "EasyPOS",
+    "images_directory": "images",
     "theme": "dark",
-"printer_connection_type": "fake",
+    "printer_connection_type": "usb",
     "printer_connection_args": {
         "usb": {
             "idVendor": 1046,
-            "idProduct": 20497
+            "idProduct": 20497,
+            "encoding": "cp860"
         },
         "network": {
-            "host": "123.123.123.123",
-            "port": 9100
+            "ip": "237.84.2.178",
+            "port": 9100,
+            "encoding": "cp860"
         },
         "fake": {}
     }

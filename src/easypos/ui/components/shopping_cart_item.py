@@ -1,5 +1,8 @@
 import customtkinter as ctk
-from PIL import Image
+from easypos.utils import utils
+from easypos.settings import APP_SETTINGS
+import os
+ICON_SIZE = (40, 40)
 
 
 class ShoppingCartItem(ctk.CTkFrame):
@@ -27,8 +30,9 @@ class ShoppingCartItem(ctk.CTkFrame):
         self.image = None
         if getattr(self.item, "icon", None):
             try:
-                img = Image.open(f"images/{self.item.icon}").resize((40, 40))
-                self.image = ctk.CTkImage(img, size=(40, 40))
+                image_path = os.path.join(APP_SETTINGS.get("images_directory"), "products", self.item.icon)
+                image = utils.load_image(image_path)
+                self.image = ctk.CTkImage(image, size=ICON_SIZE)
             except Exception:
                 pass
 

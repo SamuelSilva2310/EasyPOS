@@ -49,7 +49,7 @@ class SaleController():
     def _process_item(self, sale, data):
         item = data["item"]
         quantity = data["quantity"]
-        sale_item = SaleItemModel(sale_id=sale.id, item_id=item.id, quantity=quantity, total_price=item.price * quantity)
+        sale_item = SaleItemModel(sale_id=sale.id, item_id=item.id, quantity=quantity, item_price=item.price, total_price=item.price * quantity)
         SaleService.add_item_to_sale(sale_item)
         
 

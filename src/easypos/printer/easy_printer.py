@@ -1,7 +1,10 @@
 
 from easypos.models.ticket import TicketModel
 from easypos.printer.fake_printer import FakePrinter
-from escpos.printer import Usb
+from escpos.printer import Usb, Network
+from easypos.printer.styles import TicketStyles
+from easypos.utils import utils
+from easypos.settings import APP_SETTINGS
 from PIL import Image
 import traceback
 import os
@@ -10,24 +13,7 @@ import time
 import logging
 logger = logging.getLogger(__name__)
 
-def get_usb_printer_info():
-    return vendor_id, product_id
 
-PRINTER_STYLE_TITLE = {
-    "align": "center",
-    "bold": True,
-    "custom_size": True,
-    "width": 2,
-    "height": 2
-}
-
-PRINTER_STYLE_INFO = {
-    "align": "center",
-    "bold": False,
-    "custom_size": True,
-    "width": 1,
-    "height": 1
-}
 
 # Custom exception for clarity
 class PrinterConnectionError(Exception):
@@ -35,8 +21,8 @@ class PrinterConnectionError(Exception):
 
 
 class EasyPrinter:
-    def __init__(self, printer_connection_type, connection_args={}, ticket_width=203):
-        self.ticket_width = ticket_width
+    def __init__(self, printer_connection_type, connection_args={}):
+        
         self.is_busy = False
 
         try:
@@ -44,7 +30,9 @@ class EasyPrinter:
             if printer_connection_type == "usb":
                 self.printer = Usb(**connection_args)
             elif printer_connection_type == "fake":
-                self.printer = FakePrinter(connection_args, ticket_width=self.ticket_width)
+                self.printer = FakePrinter(connection_args)
+            elif printer_connection_type == "network":
+                self.printer = Network(**connection_args)
             else:
                 raise ValueError(f"Invalid printer connection type: {printer_connection_type}")
 
@@ -72,35 +60,34 @@ class EasyPrinter:
             return False
 
     def _print_title(self, title):
-        self.printer.set(**PRINTER_STYLE_TITLE)
+        self.printer.set(**TicketStyles.STYLE_INFO)
         self.printer.text(title)
 
 
-    def _print_logo(self, icon_path):
-        icon = Image.open(os.path.join("images", icon_path)).convert("1")
-        max_width = self.ticket_width * 0.8
-        w_percent = (max_width / float(icon.size[0]))
-        h_size = int((float(icon.size[1]) * float(w_percent)))
-        icon = icon.resize((max_width, h_size))
-        self.printer.image(icon, center=True)
+    def _print_logo(self, image_path):
+        path = os.path.join(APP_SETTINGS.get("images_directory"), image_path)
+
+        image = utils.load_image(path, TicketStyles.ICON_IMAGE_WIDTH, TicketStyles.LOGO_SCALE_FACTOR)
+        image = image.convert("1")
+        self.printer.image(image)
 
     def _print_icon(self, icon_path):
-        icon = Image.open(os.path.join("images", icon_path)).convert("1")
-        max_width = self.ticket_width
-        w_percent = (max_width / float(icon.size[0]))
-        h_size = int((float(icon.size[1]) * float(w_percent)))
-        icon = icon.resize((max_width, h_size))
-        self.printer.image(icon, center=True)
+        path = os.path.join(APP_SETTINGS.get("images_directory"), 'products', icon_path)
+        image = utils.load_image(path, TicketStyles.ICON_IMAGE_WIDTH, TicketStyles.ICON_IMAGE_SCALE_FACTOR)
+        image = image.convert("1")
+        self.printer.image(image, center=True)
+        
 
     def _print_info(self, description):
-        self.printer.set(**PRINTER_STYLE_INFO)
+        self.printer.set(**TicketStyles.STYLE_INFO)
         self.printer.text(description)
 
     def print_ticket(self, ticket: TicketModel):
         self.is_busy = True
         logger.info(f"Printing ticket {ticket}")
         try:
-            self._print_logo()
+            self._print_logo("logo.png")
+            self.printer.textln()
             self._print_title(ticket.name)
             self.printer.textln()
             self._print_icon(ticket.icon)

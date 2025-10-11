@@ -1,6 +1,8 @@
 
 import customtkinter as ctk
 from easypos.ui.components.shopping_cart_item import ShoppingCartItem
+from easypos.settings import APP_SETTINGS
+from easypos.utils import utils
 
 import logging
 logger = logging.getLogger(__name__)
@@ -45,7 +47,7 @@ class ShoppingCartFrame(ctk.CTkFrame):
         # “Clear Cart” button on the right
         self.btn_clear_cart = ctk.CTkButton(
             self.cart_action_frame,
-            text="🗑 Limpar carrinho",
+            text="Limpar carrinho",
             command=self.clear_cart,
             width=140,
             height=36,

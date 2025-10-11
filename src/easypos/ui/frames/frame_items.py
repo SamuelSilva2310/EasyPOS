@@ -1,9 +1,11 @@
 import customtkinter as ctk
 import os
 from PIL import Image
-from easypos.ui.settings import UISettings
+from easypos.ui.styles import UISettings
 from easypos.ui.components.hover_button import HoverButton
 import logging
+from easypos.settings import APP_SETTINGS
+from easypos.utils import utils
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +28,6 @@ class ItemsFrame(ctk.CTkScrollableFrame):
         self.selected_item = None
 
         self.buttons = {}
-        self.button_images = {}
         self.buttons_frame = None
 
         self._style()
@@ -67,7 +68,7 @@ class ItemsFrame(ctk.CTkScrollableFrame):
             self.buttons_frame.destroy()
             self.buttons_frame = None
         self.buttons.clear()
-        self.button_images.clear()
+
 
     def _create_buttons_grid(self, items):
         """Build the grid of item buttons."""
@@ -116,18 +117,18 @@ class ItemsFrame(ctk.CTkScrollableFrame):
     # -------------------------------
 
     def _load_image(self, icon_filename):
+
+        image_path = os.path.join(APP_SETTINGS.get("images_directory"), "products", icon_filename)
         """Safely load and resize the item image."""
         if not icon_filename:
             return None
-        img_path = os.path.join("images", icon_filename)
-        if not os.path.exists(img_path):
-            return None
+        
 
-        img = Image.open(img_path)
+        image = utils.load_image(image_path)
+        
         image_width = BUTTON_WIDTH * IMAGE_SCALE_FACTOR
         image_height = BUTTON_HEIGHT * IMAGE_SCALE_FACTOR
-        photo = ctk.CTkImage(img, size=(image_width, image_height))
-        self.button_images[icon_filename] = photo  # keep reference alive
+        photo = ctk.CTkImage(image, size=(image_width, image_height))
         return photo
 
     # -------------------------------

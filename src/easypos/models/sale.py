@@ -30,6 +30,7 @@ class SaleItemModel():
     sale_id: int
     item_id: int
     quantity: int
+    item_price: float
     total_price: float
 
     created_at: Optional[datetime] = None
@@ -57,8 +58,9 @@ class SaleService:
     @classmethod
     def add_item_to_sale(cls, sale_item: SaleItemModel):
         with DBConnection() as db:
-            db.execute("INSERT INTO sales_items (sale_id, item_id, quantity, total_price) VALUES (?, ?, ?, ?)",
+            db.execute("INSERT INTO sales_items (sale_id, item_id, quantity, item_price, total_price) VALUES (?, ?, ?, ?, ?)",
                        (sale_item.sale_id, sale_item.item_id,
+                        sale_item.item_price,
                         sale_item.quantity, sale_item.total_price)
                        )
             return True

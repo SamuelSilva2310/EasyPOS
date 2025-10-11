@@ -2,7 +2,7 @@
 import customtkinter as ctk
 from easypos.ui.frames.frame_actions import ActionsFrame
 from easypos.ui.frames.frame_shopping_cart import ShoppingCartFrame
-from easypos.ui.settings import UISettings
+from easypos.ui.styles import UISettings
 
 class LayoutRight(ctk.CTkFrame):
     def __init__(self, parent, sale_controller):

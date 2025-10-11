@@ -2,9 +2,10 @@ import sqlite3
 import os
 from pathlib import Path
 from easypos.config.db_config import DB_CONFIG
+from easypos.settings import APP_SETTINGS
 
 # Database and schema paths
-DB_PATH = Path("data/easypos_database.db")
+DB_PATH = Path(APP_SETTINGS.DB_PATH)
 SCHEMA_PATH = Path("db/schema.sql")
 
 

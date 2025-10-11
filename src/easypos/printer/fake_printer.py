@@ -3,7 +3,7 @@
 from PIL import Image
 
 class FakePrinter:
-    def __init__(self, printer_connection_args=None, ticket_width=40):
+    def __init__(self, printer_connection_args=None, ticket_width=100):
         self.ticket_width = ticket_width  # characters
         self.logs = []  # keep text output for debugging/tests
         self.align = "left"

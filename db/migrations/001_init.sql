@@ -31,6 +31,7 @@ CREATE TABLE IF NOT EXISTS sales_items (
     sale_id INTEGER NOT NULL,
     item_id INTEGER NOT NULL,
     quantity INTEGER NOT NULL,
+    item_price REAL NOT NULL,
     total_price REAL NOT NULL,
     created_at TEXT NOT NULL DEFAULT current_timestamp,
     updated_at DATETIME DEFAULT current_timestamp,

@@ -1,7 +1,7 @@
 import customtkinter as ctk
 from PIL import Image, ImageTk
 import logging
-from easypos.ui.settings import UISettings
+from easypos.ui.styles import UISettings
 
 logger = logging.getLogger(__name__)
 

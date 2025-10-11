@@ -1,12 +1,13 @@
 import logging
 from logging.handlers import RotatingFileHandler
+from easypos.settings import APP_SETTINGS
 
 def setup_logging():
     logging.basicConfig(
         level=logging.DEBUG,
         format="%(asctime)s [%(levelname)s] [%(threadName)s] %(name)s: %(message)s",
         handlers=[
-            RotatingFileHandler("easypos.log", maxBytes=5_000_000, backupCount=3),
+            RotatingFileHandler(APP_SETTINGS.LOG_PATH, maxBytes=5_000_000, backupCount=3),
             logging.StreamHandler()
         ]
     )

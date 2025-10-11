@@ -1,3 +1,5 @@
+
+from easypos.settings import AppSettings
 import logging
 from easypos.logger import setup_logging
 setup_logging()
@@ -11,8 +13,6 @@ from easypos.database.bootstrap import init_db
 from easypos.app import EasyPOSApp
 from easypos.printer.consumer import start_consumer
 from easypos.printer.printer_manager import PrinterManager
-
-from easypos.settings import AppSettings
 
 
 def main(args):
