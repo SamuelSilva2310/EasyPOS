@@ -36,12 +36,12 @@ class EasyPrinter:
             else:
                 raise ValueError(f"Invalid printer connection type: {printer_connection_type}")
 
-            is_online = self._check_connection()
+            #is_online = self._check_connection()
 
-            if not is_online:
-                raise PrinterConnectionError(
-                    f"Could not connect to printer (type={printer_connection_type})"
-                )
+            # if not is_online:
+            #     raise PrinterConnectionError(
+            #         f"Could not connect to printer (type={printer_connection_type})"
+            #     )
 
                
         except Exception as e:
@@ -60,38 +60,43 @@ class EasyPrinter:
             return False
 
     def _print_title(self, title):
-        self.printer.set(**TicketStyles.STYLE_INFO)
+        self.printer.set(**TicketStyles.STYLE_HEADER_TITLE)
         self.printer.text(title)
 
+    def _print_info(self, description):
+        self.printer.set(**TicketStyles.STYLE_INFO)
+        self.printer.text(description)
 
     def _print_logo(self, image_path):
         path = os.path.join(APP_SETTINGS.get("images_directory"), image_path)
 
         image = utils.load_image(path, TicketStyles.ICON_IMAGE_WIDTH, TicketStyles.LOGO_SCALE_FACTOR)
-        image = image.convert("1")
-        self.printer.image(image)
+        image.crop(image.getbbox())
+        image = utils.prepare_escpos_image(image)
+        self.printer.image(image, center=True)
 
     def _print_icon(self, icon_path):
         path = os.path.join(APP_SETTINGS.get("images_directory"), 'products', icon_path)
         image = utils.load_image(path, TicketStyles.ICON_IMAGE_WIDTH, TicketStyles.ICON_IMAGE_SCALE_FACTOR)
-        image = image.convert("1")
+        logger.info(f"Image size: {image.size}")
+        image = utils.prepare_escpos_image(image)
         self.printer.image(image, center=True)
         
 
-    def _print_info(self, description):
-        self.printer.set(**TicketStyles.STYLE_INFO)
-        self.printer.text(description)
+    def _print_spacer(self, lines=1):
+        for _ in range(lines):
+            self.printer.textln()
+    
 
     def print_ticket(self, ticket: TicketModel):
         self.is_busy = True
         logger.info(f"Printing ticket {ticket}")
         try:
             self._print_logo("logo.png")
-            self.printer.textln()
             self._print_title(ticket.name)
-            self.printer.textln()
+            self._print_spacer(2)
             self._print_icon(ticket.icon)
-            self.printer.textln()
+            self._print_spacer(4)
             self._print_info(ticket.description)
             self.printer.cut()
         except Exception as e:

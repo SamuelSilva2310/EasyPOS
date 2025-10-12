@@ -9,7 +9,7 @@
         {
             "id": 2,
             "slug": "drink_no_alcool",
-            "label": "Bebidas Não Alcoólicas",
+            "label": "Bebidas Nao Alcoolicas",
             "icon": "🥤"
         },
         {
@@ -21,31 +21,31 @@
         {
             "id": 4,
             "slug": "alcoholic_drinks",
-            "label": "Bebidas Alcoólicas",
+            "label": "Bebidas Alcoolicas",
             "icon": "🍺"
         }
     ],
     "items": [
         {
-            "name": "Copo Associação 20 cl",
+            "name": "Copo Associacao 20 cl",
             "price": 5.0,
             "icon": "cup.png",
             "category_id": 1
         },
         {
-            "name": "Copo Associação 40 cl",
+            "name": "Copo Associacao 40 cl",
             "price": 1.2,
             "icon": "cup.png",
             "category_id": 1
         },
         {
-            "name": "Água",
+            "name": "Agua",
             "price": 1.0,
             "icon": "water.png",
             "category_id": 2
         },
         {
-            "name": "Café",
+            "name": "Cafe",
             "price": 1.0,
             "icon": "coffee.png",
             "category_id": 2
@@ -75,7 +75,7 @@
             "category_id": 2
         },
         {
-            "name": "Água Pedras",
+            "name": "Agua Pedras",
             "price": 1.5,
             "icon": "agua_pedras.png",
             "category_id": 2
@@ -111,7 +111,7 @@
             "category_id": 4
         },
         {
-            "name": "Beirão",
+            "name": "Beirao",
             "price": 2.5,
             "icon": "beirao.png",
             "category_id": 4

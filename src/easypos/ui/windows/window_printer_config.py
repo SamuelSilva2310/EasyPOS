@@ -1,11 +1,11 @@
 import customtkinter as ctk
 from easypos.printer.printer_manager import PrinterManager
 import logging
-from easypos.settings import AppSettings
+from easypos.settings import APP_SETTINGS
 import re
 
 logger = logging.getLogger(__name__)
-app_settings = AppSettings.get_instance()
+
 
 
 class PrinterConfigWindow(ctk.CTkToplevel):
@@ -30,7 +30,7 @@ class PrinterConfigWindow(ctk.CTkToplevel):
 
         # --- USB Tab ---
         tab_usb = self.tabs.add("USB")
-        printer_connection_args = app_settings.get("printer_connection_args", {}).get("usb", {})
+        printer_connection_args = APP_SETTINGS.get("printer_connection_args", {}).get("usb", {})
 
         ctk.CTkLabel(tab_usb, text="Vendor ID:").pack(anchor="w", padx=10, pady=(10, 0))
         self.usb_vendor_id = ctk.CTkEntry(tab_usb, placeholder_text="e.g. 0x10c4")
@@ -46,7 +46,7 @@ class PrinterConfigWindow(ctk.CTkToplevel):
 
         # --- Network Tab ---
         tab_network = self.tabs.add("Network")
-        printer_connection_args = app_settings.get("printer_connection_args", {}).get("network", {})
+        printer_connection_args = APP_SETTINGS.get("printer_connection_args", {}).get("network", {})
 
         ctk.CTkLabel(tab_network, text="Endereço IP:").pack(anchor="w", padx=10, pady=(10, 0))
         self.net_ip = ctk.CTkEntry(tab_network, placeholder_text="e.g. 192.168.0.100")
@@ -62,7 +62,7 @@ class PrinterConfigWindow(ctk.CTkToplevel):
 
         # --- Fake Tab ---
         tab_fake = self.tabs.add("Fake")
-        printer_connection_args = app_settings.get("printer_connection_args", {}).get("fake", {})
+        printer_connection_args = APP_SETTINGS.get("printer_connection_args", {}).get("fake", {})
         ctk.CTkLabel(tab_fake, text="Isto e falso:").pack(anchor="w", padx=10, pady=(10, 0))
         
     def center_window(self):
@@ -167,6 +167,9 @@ class PrinterConfigWindow(ctk.CTkToplevel):
                 self.after(1500, self.destroy)
             else:
                 self.show_message("Erro ao conectar à impressora", "red")
+
+            APP_SETTINGS.set("printer_connection_type", conn_type)
+            APP_SETTINGS.set("printer_connection_args", args)
 
         except Exception as e:
             logger.error(f"Erro ao conectar impressora: {e}")

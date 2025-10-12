@@ -137,5 +137,6 @@ class UIApp(ctk.CTk):
     def run(self):
         self.start_status_monitor()
         self.mainloop()
+        APP_SETTINGS.save()
 
 

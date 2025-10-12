@@ -65,7 +65,8 @@ class SaleController():
                 try:
                     logger.info(f"Creating ticket {i}/{quantity}")
                     current_date = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
-                    description = f"#{sale.id}\n{current_date}"
+                    #description = f"#{sale.id}\n{current_date}"
+                    description = f"{current_date}"
                     ticket = TicketModel(sale_id=sale.id, name=item.name, icon=item.icon, description=description, item_id=item.id)
                     ticket = TicketService.add_ticket(ticket)
 
