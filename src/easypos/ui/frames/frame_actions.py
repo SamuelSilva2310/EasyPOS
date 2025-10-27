@@ -18,22 +18,21 @@ class ActionsFrame(ctk.CTkFrame):
         self.change_var = ctk.StringVar(value="0.00 €")
 
         # Layout configuration
-        self.grid_rowconfigure((0, 1, 2, 3), weight=1)
-        self.grid_columnconfigure(0, weight=1)
-        self.grid_columnconfigure(1, weight=1)
+        self.grid_rowconfigure((0, 1, 2, 3, 4), weight=1)
+        self.grid_columnconfigure((0, 1), weight=1)
 
         self._create_components()
 
     def _create_components(self):
         padding_y = 10
         padding_x = 12
+        button_width = 220
+        button_height = 48
 
         # --- TOTAL SECTION ---
         total_frame = ctk.CTkFrame(self, corner_radius=10, fg_color=("#F0F0F0", "#2b2b2b"))
         total_frame.grid(row=0, column=0, columnspan=2, sticky="ew", padx=padding_x, pady=(padding_y, 4))
-
-        total_frame.grid_columnconfigure(0, weight=1)
-        total_frame.grid_columnconfigure(1, weight=1)
+        total_frame.grid_columnconfigure((0, 1), weight=1)
 
         ctk.CTkLabel(
             total_frame, text="Total:", font=ctk.CTkFont(size=18, weight="bold")
@@ -50,14 +49,10 @@ class ActionsFrame(ctk.CTkFrame):
         # --- PAYMENT SECTION ---
         payment_frame = ctk.CTkFrame(self, corner_radius=10, fg_color=("#F0F0F0", "#2b2b2b"))
         payment_frame.grid(row=1, column=0, columnspan=2, sticky="ew", padx=padding_x, pady=padding_y)
-
-        payment_frame.grid_columnconfigure(0, weight=1)
-        payment_frame.grid_columnconfigure(1, weight=1)
+        payment_frame.grid_columnconfigure((0, 1), weight=1)
 
         ctk.CTkLabel(
-            payment_frame,
-            text="Dinheiro recebido:",
-            font=ctk.CTkFont(size=16),
+            payment_frame, text="Dinheiro recebido:", font=ctk.CTkFont(size=16)
         ).grid(row=0, column=0, sticky="e", padx=padding_x, pady=padding_y)
 
         self.input_money_handed = ctk.CTkEntry(
@@ -70,9 +65,7 @@ class ActionsFrame(ctk.CTkFrame):
         self.input_money_handed.grid(row=0, column=1, sticky="w", padx=padding_x, pady=padding_y)
 
         ctk.CTkLabel(
-            payment_frame,
-            text="Troco:",
-            font=ctk.CTkFont(size=16),
+            payment_frame, text="Troco:", font=ctk.CTkFont(size=16)
         ).grid(row=1, column=0, sticky="e", padx=padding_x, pady=padding_y)
 
         self.label_change = ctk.CTkLabel(
@@ -83,19 +76,37 @@ class ActionsFrame(ctk.CTkFrame):
         )
         self.label_change.grid(row=1, column=1, sticky="w", padx=padding_x, pady=padding_y)
 
-        # --- SELL BUTTON ---
+        # --- BUTTONS SECTION ---
+        button_frame = ctk.CTkFrame(self, fg_color="transparent")
+        button_frame.grid(row=2, column=0, columnspan=2, pady=(padding_y * 2, padding_y))
+
+        button_frame.grid_columnconfigure((0, 1), weight=1)
+
+        self.button_open_cashdrawer = ctk.CTkButton(
+            button_frame,
+            text="Abrir caixa",
+            command=self.open_cashdrawer,
+            height=button_height,
+            width=button_width,
+            corner_radius=10,
+            font=ctk.CTkFont(size=18, weight="bold"),
+            fg_color=("#6c757d", "#5a6268"),
+            hover_color=("#5a6268", "#4e555b"),
+        )
+        self.button_open_cashdrawer.grid(row=0, column=0, padx=(0, 8))
+
         self.button_sell = ctk.CTkButton(
-            self,
+            button_frame,
             text="Vender",
             command=self.sell,
-            height=48,
-            width=220,
+            height=button_height,
+            width=button_width,
             corner_radius=10,
             font=ctk.CTkFont(size=18, weight="bold"),
             fg_color=("#007bff", "#1e90ff"),
             hover_color=("#0056b3", "#0077cc"),
         )
-        self.button_sell.grid(row=2, column=0, columnspan=2, pady=(padding_y * 2, padding_y))
+        self.button_sell.grid(row=0, column=1, padx=(8, 0))
 
         # Trace entry changes
         self.money_var.trace_add("write", self._on_money_change)
@@ -105,30 +116,21 @@ class ActionsFrame(ctk.CTkFrame):
     def update_ui(self, cart_items):
         """Update total when cart changes."""
         self.cart_items = cart_items
-        total = 0.0
-        for data in cart_items.values():
-            item = data["item"]
-            quantity = data["quantity"]
-            total += item.price * quantity
-
+        total = sum(data["item"].price * data["quantity"] for data in cart_items.values())
         self.total_price_var.set(f"{total:.2f} €")
-        self._on_money_change()  # update change immediately
+        self._on_money_change()
 
     def _on_money_change(self, *args):
         """Recalculate change dynamically."""
         try:
-            total_str = self.total_price_var.get().replace("€", "").strip()
-            total = float(total_str) if total_str else 0.0
+            total = float(self.total_price_var.get().replace("€", "").strip() or 0)
         except ValueError:
             total = 0.0
-
         try:
-            money = float(self.money_var.get().replace(",", "."))
+            money = float(self.money_var.get().replace(",", ".") or 0)
         except ValueError:
             money = 0.0
-
-        change = money - total
-        self.change_var.set(f"{change:.2f} €")
+        self.change_var.set(f"{(money - total):.2f} €")
 
     def sell(self):
         """Finalize the sale for all items in cart."""
@@ -136,3 +138,8 @@ class ActionsFrame(ctk.CTkFrame):
         self.sale_controller.make_sale(self.cart_items)
         if self.on_sale_complete:
             self.on_sale_complete()
+
+    def open_cashdrawer(self):
+        """Open the connected cash drawer."""
+        logger.info("Opening cash drawer...")
+        self.sale_controller.open_cashdrawer()

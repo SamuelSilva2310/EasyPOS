@@ -86,3 +86,6 @@ class SaleController():
 
     def get_sales(self):
         return self.sales
+    
+    def open_cashdrawer(self, pin=2):
+        self.printer.open_cashdrawer(pin)
