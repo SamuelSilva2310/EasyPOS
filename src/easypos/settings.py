@@ -1,5 +1,6 @@
 import json
 import os
+import sys
 import threading
 from pathlib import Path
 from platformdirs import PlatformDirs
@@ -46,9 +47,23 @@ class AppSettings:
         self.DB_PATH = self.data_dir / "easypos.db"
         self.LOG_PATH = self.log_dir / "easypos.log"
 
+        print(f"[SETTINGS] CONFIG_PATH: {self.CONFIG_PATH}")
+        print(f"[SETTINGS] DB_PATH: {self.DB_PATH}")
+        print(f"[SETTINGS] LOG_PATH: {self.LOG_PATH}")
         self.settings = dict(AppSettings.DEFAULTS)
         self.load()
 
+        print(f"[SETTINGS] RUNTIME_DIRECTORY: {self.RUNTIME_DIRECTORY}")
+
+    @property
+    def RUNTIME_DIRECTORY(self) -> Path:
+        if getattr(sys, 'frozen', False):
+            # PyInstaller runtime folder
+            return Path(sys._MEIPASS).resolve()
+        else:
+            # Normal source layout
+            return Path(__file__).resolve().parents[2]
+        
     # ------------------------
     # Singleton
     # ------------------------

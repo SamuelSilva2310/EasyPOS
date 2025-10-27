@@ -2,6 +2,7 @@ class TicketStyles:
     # --- Image scaling ---
     LOGO_SCALE_FACTOR = 0.6      # Slightly smaller
     ICON_IMAGE_WIDTH = 180
+    ICON_IMAGE_HEIGHT = 180
     ICON_IMAGE_SCALE_FACTOR = 1.0
 
     # --- Text styles ---
@@ -19,6 +20,10 @@ class TicketStyles:
         "custom_size": True,
         "width": 1,
         "height": 1
+    }
+
+    STYLE_IMAGE = {
+        "align": "center",
     }
 
 

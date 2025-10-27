@@ -1,0 +1,86 @@
+# -*- mode: python ; coding: utf-8 -*-
+
+from pathlib import Path
+import sysconfig
+from PyInstaller.utils.hooks import collect_data_files
+from PyInstaller.building.build_main import Analysis, PYZ, EXE, COLLECT, BUNDLE
+
+# --- Paths ---
+base_path = Path(__name__).parent
+src_path = base_path / "src" / "easypos"
+
+# # --- Python shared lib (important for macOS app bundles) ---
+# libdir = sysconfig.get_config_var("LIBDIR")
+# libname = sysconfig.get_config_var("LDLIBRARY")
+# binaries = []
+# if libdir and libname:
+#     lib_path = Path(libdir) / libname
+#     if lib_path.exists():
+#         print(f"Including Python shared lib: {lib_path}")
+#         binaries.append((str(lib_path), "Frameworks"))
+
+# --- Include data for escpos ---
+escpos_datas = collect_data_files("escpos")
+
+# --- Include app data ---
+app_datas = [
+    ("images", "images"),
+    ("db", "db"),
+    ("easypos_config.json", "."),
+]
+
+datas = escpos_datas + app_datas
+
+# --- Icon file ---
+icon_file = str(base_path / "images" / "logo.png")
+
+# --- Analysis ---
+a = Analysis(
+    [str(src_path / "main.py")],
+    pathex=[str(src_path)],
+    binaries=[],
+    datas=datas,
+    hiddenimports=[],
+    hookspath=[],
+    runtime_hooks=[],
+    excludes=[],
+    noarchive=False,
+)
+
+# --- PYZ archive ---
+pyz = PYZ(a.pure, a.zipped_data, cipher=None)
+
+# --- Executable (main app logic) ---
+exe = EXE(
+    pyz,
+    a.scripts,
+    [],
+    exclude_binaries=True,
+    name="EasyPOS",
+    debug=False,
+    bootloader_ignore_signals=False,
+    strip=False,
+    upx=True,
+    console=False,
+    icon=icon_file if Path(icon_file).exists() else None,
+)
+
+# --- Bundle (macOS .app wrapper) ---
+app = BUNDLE(
+    exe,
+    name="EasyPOS.app",
+    icon=icon_file if Path(icon_file).exists() else None,
+    bundle_identifier="com.samuel.easypos",
+)
+
+# --- Collect everything into dist/EasyPOS ---
+coll = COLLECT(
+    exe,  # <<<< must be EXE, not app
+    a.binaries,
+    a.zipfiles,
+    a.datas,
+    strip=False,
+    upx=True,
+    upx_exclude=[],
+    name="EasyPOS",
+)

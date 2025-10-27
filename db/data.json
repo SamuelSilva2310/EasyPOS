@@ -28,7 +28,7 @@
     "items": [
         {
             "name": "Copo Associacao 20 cl",
-            "price": 5.0,
+            "price": 1.0,
             "icon": "cup.png",
             "category_id": 1
         },

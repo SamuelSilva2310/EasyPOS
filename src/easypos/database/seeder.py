@@ -3,10 +3,12 @@ import json
 from pathlib import Path
 from easypos.database.connection import DBConnection
 import logging
+from easypos.utils import utils
+
 
 logger = logging.getLogger(__name__)
 
-DATA_PATH = Path("db/data.json")
+DATA_PATH = utils.resource_path("db/data.json")
 
 
 def import_data(filepath=DATA_PATH):

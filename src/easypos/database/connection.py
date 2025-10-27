@@ -3,14 +3,16 @@ import os
 from pathlib import Path
 from easypos.config.db_config import DB_CONFIG
 from easypos.settings import APP_SETTINGS
+from easypos.utils import utils
 
 # Database and schema paths
 DB_PATH = Path(APP_SETTINGS.DB_PATH)
-SCHEMA_PATH = Path("db/schema.sql")
+SCHEMA_PATH = utils.resource_path("db/schema.sql")
 
 
 
-
+import logging
+logger = logging.getLogger(__name__)
 
 
 class DBConnection:
@@ -21,6 +23,7 @@ class DBConnection:
         self._conn = sqlite3.connect(DB_PATH)
         self._conn.row_factory = sqlite3.Row  # Enable dict-like access
         self._cursor = self._conn.cursor()
+
 
     def _ensure_db_folder_exists(self):
         """Ensure the folder for the database exists."""

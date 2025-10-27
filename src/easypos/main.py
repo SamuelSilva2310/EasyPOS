@@ -1,5 +1,5 @@
 
-from easypos.settings import AppSettings
+from easypos.settings import APP_SETTINGS
 import logging
 from easypos.logger import setup_logging
 setup_logging()
@@ -13,16 +13,18 @@ from easypos.database.bootstrap import init_db
 from easypos.app import EasyPOSApp
 from easypos.printer.consumer import start_consumer
 from easypos.printer.printer_manager import PrinterManager
+import sys
 
 
 def main(args):
 
     logger.info("Starting EasyPOS...")
+    logger.info(f"RUNTIME_DIRECTORY: {APP_SETTINGS.RUNTIME_DIRECTORY}")
+
 
     # Load app settings
-    settings = AppSettings.get_instance()
-    printer_connection_type = settings.get("printer_connection_type")
-    printer_connection_args = settings.get("printer_connection_args", {}).get(printer_connection_type)
+    printer_connection_type = APP_SETTINGS.get("printer_connection_type")
+    printer_connection_args = APP_SETTINGS.get("printer_connection_args", {}).get(printer_connection_type)
 
 
     # Initialize database

@@ -49,7 +49,7 @@ class UIApp(ctk.CTk):
         inner_frame.grid_columnconfigure(1, weight=0)
 
         # --- Left: dropdown menu ---
-        menu = ctk.CTkOptionMenu(inner_frame, values=["Opções", "Importar dados", "Trocar conexão impressora"], command=self._option_menu_callback)
+        menu = ctk.CTkOptionMenu(inner_frame, values=["Opções", "Importar dados", "Conectar Impressora"], command=self._option_menu_callback)
         menu.grid(row=0, column=0, sticky="w")
 
 
@@ -92,7 +92,7 @@ class UIApp(ctk.CTk):
             except Exception as e:
                 print(f"Error importing data: {e}")
             logger.info(f"Data imported from {filepath}")
-        elif option == "Trocar conexão impressora":
+        elif option == "Conectar Impressora":
             from easypos.ui.windows.window_printer_config import PrinterConfigWindow
             window = PrinterConfigWindow(self)
             window.center_window()

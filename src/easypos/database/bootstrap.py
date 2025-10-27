@@ -24,5 +24,6 @@ def init_db():
     # Apply migrations
     migrate()
 
+    logger.info("Database initialized successfully.")
     # Seed data
     import_data()

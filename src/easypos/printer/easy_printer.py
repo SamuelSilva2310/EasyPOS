@@ -68,7 +68,8 @@ class EasyPrinter:
         self.printer.text(description)
 
     def _print_logo(self, image_path):
-        path = os.path.join(APP_SETTINGS.get("images_directory"), image_path)
+        self.printer.set(**TicketStyles.STYLE_IMAGE)
+        path = utils.resource_path("images/logo.png")
 
         image = utils.load_image(path, TicketStyles.ICON_IMAGE_WIDTH, TicketStyles.LOGO_SCALE_FACTOR)
         image.crop(image.getbbox())
@@ -76,10 +77,11 @@ class EasyPrinter:
         self.printer.image(image, center=True)
 
     def _print_icon(self, icon_path):
+        self.printer.set(**TicketStyles.STYLE_IMAGE)
         path = os.path.join(APP_SETTINGS.get("images_directory"), 'products', icon_path)
         image = utils.load_image(path, TicketStyles.ICON_IMAGE_WIDTH, TicketStyles.ICON_IMAGE_SCALE_FACTOR)
         logger.info(f"Image size: {image.size}")
-        image = utils.prepare_escpos_image(image)
+        image = utils.prepare_escpos_image(image, TicketStyles.ICON_IMAGE_WIDTH, TicketStyles.ICON_IMAGE_HEIGHT)
         self.printer.image(image, center=True)
         
 
@@ -92,6 +94,7 @@ class EasyPrinter:
         self.is_busy = True
         logger.info(f"Printing ticket {ticket}")
         try:
+            self._print_spacer(1)
             self._print_logo("logo.png")
             self._print_title(ticket.name)
             self._print_spacer(2)

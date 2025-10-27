@@ -2,12 +2,13 @@ import sqlite3
 from pathlib import Path
 from easypos.config.db_config import DB_CONFIG
 from easypos.database.connection import DBConnection
+from easypos.utils import utils
 
 import logging
 logger = logging.getLogger(__name__)
 
-DB_PATH = Path("data/easypos_database.db")
-MIGRATIONS_PATH = Path("db/migrations")
+MIGRATIONS_PATH = utils.resource_path("db/migrations")
+logger.info("MIGRATIONS_PATH: {}".format(MIGRATIONS_PATH))
 
 
 
@@ -43,7 +44,7 @@ def migrate():
         applied = get_applied_migrations(db)
 
         # Ensure migration folder exists
-        MIGRATIONS_PATH.mkdir(parents=True, exist_ok=True)
+        #MIGRATIONS_PATH.mkdir(parents=True, exist_ok=True)
 
         # Sort migration files by name (001, 002, ...)
         for migration_file in sorted(MIGRATIONS_PATH.glob("*.sql")):
