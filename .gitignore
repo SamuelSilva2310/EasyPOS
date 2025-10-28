@@ -31,7 +31,7 @@ Thumbs.db
 # PyInstaller builds (if you package your app)
 dist/
 build/
-*.spec
+
 
 # Python egg files
 *.egg-info/

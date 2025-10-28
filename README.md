@@ -43,3 +43,6 @@ pyinstaller EasyPOS.spec --clean --noconfirm
 ```
 
 
+
+# Windows related
+https://nyorikakar.medium.com/printing-with-python-and-epson-pos-printer-fbd17e127b6c
