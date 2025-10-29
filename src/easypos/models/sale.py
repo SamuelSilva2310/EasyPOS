@@ -60,8 +60,7 @@ class SaleService:
         with DBConnection() as db:
             db.execute("INSERT INTO sales_items (sale_id, item_id, quantity, item_price, total_price) VALUES (?, ?, ?, ?, ?)",
                        (sale_item.sale_id, sale_item.item_id,
-                        sale_item.item_price,
-                        sale_item.quantity, sale_item.total_price)
+                        sale_item.quantity, sale_item.item_price, sale_item.total_price)
                        )
             return True
 

@@ -119,6 +119,9 @@ class ItemsFrame(ctk.CTkScrollableFrame):
     def _load_image(self, icon_filename):
 
         image_path = os.path.join(APP_SETTINGS.get("images_directory"), "products", icon_filename)
+        if not os.path.exists(image_path):
+            return None
+
         """Safely load and resize the item image."""
         if not icon_filename:
             return None

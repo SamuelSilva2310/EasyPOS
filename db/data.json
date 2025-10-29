@@ -4,39 +4,76 @@
             "id": 1,
             "slug": "cups",
             "label": "Copos",
-            "icon": "🥤"
+            "icon": ""
         },
         {
             "id": 2,
             "slug": "drink_no_alcool",
             "label": "Bebidas Nao Alcoolicas",
-            "icon": "🥤"
+            "icon": ""
         },
         {
             "id": 3,
             "slug": "food",
             "label": "Comida",
-            "icon": "🍔"
+            "icon": ""
         },
         {
             "id": 4,
             "slug": "alcoholic_drinks",
             "label": "Bebidas Alcoolicas",
-            "icon": "🍺"
+            "icon": ""
         }
     ],
     "items": [
         {
-            "name": "Copo Associacao 20 cl",
-            "price": 1.0,
-            "icon": "cup.png",
-            "category_id": 1
+            "name": "Imperial",
+            "price": 1.5,
+            "icon": "beer.png",
+            "category_id": 4
         },
         {
-            "name": "Copo Associacao 40 cl",
-            "price": 1.2,
-            "icon": "cup.png",
-            "category_id": 1
+            "name": "Abafadinho",
+            "price": 2.0,
+            "icon": "abafadinho.png",
+            "category_id": 4
+        },
+        {
+            "name": "Sangria",
+            "price": 2.0,
+            "icon": "sangria.png",
+            "category_id": 4
+        },
+        {
+            "name": "Whiskey",
+            "price": 3.0,
+            "icon": "whiskey.png",
+            "category_id": 4
+        },
+        {
+            "name": "Cidra",
+            "price": 2.0,
+            "icon": "cider.png",
+            "category_id": 4
+        },
+        {
+            "name": "Beirao",
+            "price": 2.5,
+            "icon": "beirao.png",
+            "category_id": 4
+        },
+        {
+            "name": "Sumo",
+            "price": 1.5,
+            "icon": "soda.png",
+            "category_id": 2
+        },
+        
+        {
+            "name": "Agua Pedras",
+            "price": 1.5,
+            "icon": "agua_pedras.png",
+            "category_id": 2
         },
         {
             "name": "Agua",
@@ -50,8 +87,10 @@
             "icon": "coffee.png",
             "category_id": 2
         },
+        
+        
         {
-            "name": "Salgados",
+            "name": "Salgado",
             "price": 1.0,
             "icon": "salgado.png",
             "category_id": 3
@@ -68,53 +107,31 @@
             "icon": "bifana.png",
             "category_id": 3
         },
+        
         {
-            "name": "Sumo",
-            "price": 1.5,
-            "icon": "soda.png",
-            "category_id": 2
+            "name": "Batatas fritas",
+            "price": 1.20,
+            "icon": "batatas_fritas.png",
+            "category_id": 3
         },
         {
-            "name": "Agua Pedras",
-            "price": 1.5,
-            "icon": "agua_pedras.png",
-            "category_id": 2
+            "name": "Tosta",
+            "price": 2.50,
+            "icon": "tosta.png",
+            "category_id": 3
         },
         {
-            "name": "Imperial",
-            "price": 1.5,
-            "icon": "beer.png",
-            "category_id": 4
+            "name": "Copo Associacao 20 cl",
+            "price": 1.0,
+            "icon": "cup.png",
+            "category_id": 1
         },
         {
-            "name": "Whiskey",
-            "price": 3.0,
-            "icon": "whiskey.png",
-            "category_id": 4
-        },
-        {
-            "name": "Moscatel",
-            "price": 2.0,
-            "icon": "moscatel.png",
-            "category_id": 4
-        },
-        {
-            "name": "Sangria",
-            "price": 2.0,
-            "icon": "sangria.png",
-            "category_id": 4
-        },
-        {
-            "name": "Cidra",
-            "price": 2.0,
-            "icon": "cider.png",
-            "category_id": 4
-        },
-        {
-            "name": "Beirao",
-            "price": 2.5,
-            "icon": "beirao.png",
-            "category_id": 4
+            "name": "Copo Associacao 40 cl",
+            "price": 1.20,
+            "icon": "cup.png",
+            "category_id": 1
         }
+
     ]
-}
+}   

@@ -19,6 +19,7 @@ UISettings.apply_theme()
 class UIApp(ctk.CTk):
     def __init__(self, sale_controller):
         super().__init__()
+        self.attributes("-fullscreen", True)  # Works on Windows, Linux, macOS
         self.title("EasyPOS")
         self.geometry(UISettings.APP_WINDOW_SIZE)
 
@@ -49,7 +50,7 @@ class UIApp(ctk.CTk):
         inner_frame.grid_columnconfigure(1, weight=0)
 
         # --- Left: dropdown menu ---
-        menu = ctk.CTkOptionMenu(inner_frame, values=["Opções", "Importar dados", "Conectar Impressora"], command=self._option_menu_callback)
+        menu = ctk.CTkOptionMenu(inner_frame, values=["Opções", "Importar dados", "Conectar Impressora", "Sobre"], command=self._option_menu_callback)
         menu.grid(row=0, column=0, sticky="w")
 
 
@@ -95,6 +96,10 @@ class UIApp(ctk.CTk):
         elif option == "Conectar Impressora":
             from easypos.ui.windows.window_printer_config import PrinterConfigWindow
             window = PrinterConfigWindow(self)
+            window.center_window()
+        elif option == "Sobre":
+            from easypos.ui.windows.window_app_info import AppInfoWindow
+            window = AppInfoWindow(self)
             window.center_window()
 
     def _refresh_all(self):
