@@ -33,7 +33,7 @@ class AppSettings:
     }
 
     def __init__(self):
-        self.dirs = PlatformDirs("EasyPOS", "SAMUE_LDA")
+        self.dirs = PlatformDirs("EasyPOS", "SAMUEL_LDA")
 
         # Create OS-appropriate directories
         self.data_dir = Path(self.dirs.user_data_dir)

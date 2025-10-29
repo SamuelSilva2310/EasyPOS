@@ -81,3 +81,12 @@ python -m easypos.main
 ```bash
 python src/easypos/test_printer.py
 ```
+
+## Must Know
+
+On WINDOWS the app files (db, logs, config) are located on a different directory
+
+When using pyhton from Microsoft (installed via store, maybe some other cases)
+```
+C:\Users\<USERNAME>\AppData\Local\Packages\PythonSoftwareFoundation.....\LocalCache\Local\<YourAuthor>\EasyPOS
+```
