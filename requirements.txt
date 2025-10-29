@@ -27,3 +27,4 @@ setuptools==80.9.0
 six==1.17.0
 tinycss2==1.4.0
 webencodings==0.5.1
+#pywin32;==311 sys_platform == "win32"
