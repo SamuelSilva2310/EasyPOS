@@ -19,7 +19,7 @@ UISettings.apply_theme()
 class UIApp(ctk.CTk):
     def __init__(self, sale_controller):
         super().__init__()
-        self.attributes("-fullscreen", True)  # Works on Windows, Linux, macOS
+        #self.attributes("-fullscreen", True)  # Works on Windows, Linux, macOS
         self.title("EasyPOS")
         self.geometry(UISettings.APP_WINDOW_SIZE)
 

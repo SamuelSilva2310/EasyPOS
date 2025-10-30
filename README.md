@@ -84,6 +84,8 @@ python src/easypos/test_printer.py
 
 ## Must Know
 
+
+**During Development**
 On WINDOWS the app files (db, logs, config) are located on a different directory
 
 When using pyhton from Microsoft (installed via store, maybe some other cases)

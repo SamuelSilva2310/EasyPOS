@@ -5,7 +5,7 @@ from PyInstaller.building.build_main import Analysis, PYZ, EXE, COLLECT
 from pathlib import Path
 
 # --- Project paths ---
-base_path = Path(__file__).parent
+base_path = Path(__name__).parent
 src_path = base_path / "src" / "easypos"
 
 # --- Include escpos data ---
